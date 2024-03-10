@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+ //   "target": "esnext", // Target ECMAScript version
+  //  "module": "esnext", // Module system (ES Modules)
+  //  "strict": true, // Enable strict type-checking
+  //  "jsx": "preserve", // Preserve JSX in output
+    "importHelpers": true, // Import helpers from tslib
+    "moduleResolution": "node", // Use Node.js module resolution
+   // "esModuleInterop": true, // Enable ES module interop
+    "allowSyntheticDefaultImports": true, // Allow synthetic default imports
+    "sourceMap": true, // Generate source maps
+    "baseUrl": ".", // Base directory for resolving non-relative module names
+    "types": [ // Type declaration files to include
+      "webpack-env",
+      "jest"
+    ],
+    "paths": { // Path mappings for module resolution
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "lib": [ // Standard library files to include
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+  "include": [ // Files to include in compilation
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": [ // Files to exclude from compilation
+    "node_modules"
+  ]
+}
