@@ -148,6 +148,12 @@ const router = new Router({
 			alias: '/:project/users'
 		},
 		{
+			path: '/:project/collections/overview',
+			component: Settings
+			// alias: '/:project/overview'
+		},
+
+		{
 			path: '/:project/collections/directus_users/:primaryKey',
 			component: Item,
 			alias: '/:project/users/:primaryKey',

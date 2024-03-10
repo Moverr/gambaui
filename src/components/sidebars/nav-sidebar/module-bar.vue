@@ -1,20 +1,8 @@
 <template>
 	<div class="module-bar">
 		<v-logo class="logo" />
-		<router-link
-			v-tooltip.left="{
-				content: currentUser.first_name + ' ' + currentUser.last_name,
-				boundariesElement: 'body'
-			}"
-			class="edit-user"
-			:class="{ smoke: avatarURL }"
-			:to="`/${currentProjectKey}/users/${currentUser.id}`"
-		>
-			<v-avatar x-large tile color="--module-background-color-active">
-				<img v-if="avatarURL" :src="avatarURL" />
-				<v-icon v-else name="person" color="--blue-grey-400" />
-			</v-avatar>
-		</router-link>
+		
+		 
 
 
 	 
