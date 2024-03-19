@@ -243,4 +243,21 @@ aside {
 		padding-left: var(--nav-sidebar-width);
 	}
 }
+
+::-webkit-scrollbar {
+	width: 10px; /* width of the entire scrollbar */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+	background: #888; /* color of the scrollbar handle */
+	border-radius: 5px; /* roundness of the scrollbar handle */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+	background: #555; /* color of the scrollbar handle on hover */
+  }
+
+  
 </style>
