@@ -17,12 +17,10 @@
 			<div v-if="active" class="content">
 				<div class="system">
 					<slot name="system" />
-					
 				</div>
 				<slot />
 			</div>
 
-			
 			<router-link
 				v-if="canReadActivity"
 				v-tooltip.left="{

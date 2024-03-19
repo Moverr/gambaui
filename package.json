@@ -10,7 +10,9 @@
     "build": "vue-cli-service build",
     "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "fix": "prettier --write \"src/**/*.{js,vue,ts}\""
+    "fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.1",
@@ -56,13 +58,22 @@
     "vuedraggable": "^2.24.1",
     "vuex": "^3.1.2",
     "vuex-persistedstate": "^2.7.0",
-    "your-script": "^0.0.5"
+    "your-script": "^0.0.5",
+    "apexcharts": "^3.29.0",
+    "vue-apexcharts": "^1.6.0",
+    "d3": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/plugin-proposal-optional-chaining": "^7.8.3",
     "@babel/preset-env": "^7.24.0",
-   
+    "@storybook/addon-actions": "^5.3.3",
+    "@storybook/addon-centered": "^5.3.6",
+    "@storybook/addon-knobs": "^5.3.6",
+    "@storybook/addon-links": "^5.3.3",
+    "@storybook/addon-notes": "^5.3.6",
+    "@storybook/addons": "^5.3.3",
+    "@storybook/vue": "^5.3.3",
     "@types/jest": "^24.0.19",
     "@vue/cli": "^5.0.8",
     "@vue/cli-plugin-babel": "^4.1.0",
@@ -89,15 +100,17 @@
     "react-is": "^16.12.0",
     "sass": "^1.23.7",
     "sass-loader": "^8.0.0",
+  
     "typescript": "^3.6.0",
-   
+    
+    "vue-cli-plugin-storybook": "^1.1.0",
     "vue-template-compiler": "^2.6.10",
     "vuepress": "^1.2.0",
     "webpack": "^4.47.0",
     "webpack-merge": "^4.2.2"
   },
   "gitHooks": {
-    "pre-commit": "lint-staged"
+     
   },
   "lint-staged": {
     "*.{js,vue,ts}": [
