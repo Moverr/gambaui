@@ -1,19 +1,19 @@
 <template>
 	<div v-if="hydratingError" id="app" class="error">
-		<v-error
+		<VError
 			icon="warning"
 			:title="$t('server_error')"
 			:body="$t('server_error_copy')"
 			color="danger"
 		/>
 		<p class="try-again">
-			Try again later or
-			<router-link to="/logout">login to a different project</router-link>
+			Contact Administrator or
+			<router-link to="/logout">Try Again</router-link>
 		</p>
 	</div>
 
 	<div v-else-if="extensionError" id="app" class="error">
-		<v-error
+		<VError
 			icon="extension"
 			:title="$t('extensions_missing')"
 			:body="$t('extensions_missing_copy')"
@@ -29,7 +29,7 @@
 		}"
 	>
 		<div v-if="hydrated" class="directus">
-			<v-nav-sidebar />
+			<VNavSidebar />
 			<router-view class="page-root" />
 		</div>
 
@@ -41,8 +41,8 @@
 	</div>
 
 	<div v-else id="app">
-		<router-view />
-		<v-notification />
+		<router-view></router-view>
+		<VNotification />
 	</div>
 </template>
 
@@ -56,9 +56,9 @@ import isCloudProject from '@/helpers/is-cloud-project';
 import { clone } from 'lodash';
 
 export default {
-	name: 'Directus',
+	name: 'Curly',
 	metaInfo: {
-		title: 'Directus'
+		title: 'Curly'
 	},
 	components: {
 		VError,
@@ -211,6 +211,7 @@ body.info-wide-active {
 .page-root {
 	background-color: var(--page-background-color);
 }
+
 .error {
 	position: fixed;
 	top: 0;

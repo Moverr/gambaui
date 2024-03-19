@@ -1,6 +1,9 @@
 <template>
 	<transition name="error">
 		<div class="v-error">
+			<div>
+				<img :src="logoImagePath" alt="Logo" />
+			</div>
 			<div class="circle" :style="{ borderColor: 'var(--' + color + ')' }">
 				<v-icon class="icon" :class="icon" :name="icon" x-large :color="`--${color}`" />
 			</div>
@@ -13,8 +16,15 @@
 </template>
 
 <script>
+import baxt from '../assets/curlapp.jpg';
+
 export default {
 	name: 'VError',
+	data() {
+		return {
+			logoImagePath: baxt // Replace with your actual image path
+		};
+	},
 	props: {
 		color: {
 			type: String,
@@ -41,15 +51,21 @@ export default {
 
 <style lang="scss" scoped>
 .v-error {
+	background: #f1f1f1;
+	padding: 10px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	margin: 100px 0;
+	width: 300px;
+	height: 300px;
+	rotate: 20deg;
+	border-radius: 3rem;
 
 	.circle {
-		border: 2px solid var(--blue-grey-50);
-		border-radius: 50%;
+		//	border: 2px solid var(--blue-grey-50);
+		//border-radius: 50%;
 		padding: 20px;
 		width: 88px;
 		height: 88px;

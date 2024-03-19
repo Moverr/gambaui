@@ -1,13 +1,8 @@
 <template>
 	<div class="module-bar">
 		<v-logo class="logo" />
-		
-		 
 
-
-	 
 		<template v-for="singleModule in modules">
-			
 			<a
 				v-if="singleModule.link.startsWith('http')"
 				:key="singleModule.link"
@@ -26,7 +21,7 @@
 					:color="`--${singleModule.color || 'blue-grey-400'}`"
 				/>
 			</a>
-			
+
 			<router-link
 				v-else
 				:key="singleModule.link"
@@ -46,7 +41,6 @@
 			</router-link>
 		</template>
 
- 
 		<div class="spacer" />
 
 		<router-link
@@ -75,8 +69,6 @@
 		>
 			<v-icon name="logout" color="--blue-grey-400" />
 		</button>
-
-		
 
 		<portal v-if="confirmSignOut" to="modal">
 			<v-confirm
@@ -112,10 +104,7 @@ export default {
 		...mapGetters(['editing']),
 		modules() {
 			let modules = [];
-		
 
-
-				
 			if (
 				Array.isArray(this.currentUser.role?.module_listing) &&
 				this.currentUser.role?.module_listing.length > 0
@@ -134,12 +123,8 @@ export default {
 					icon: 'settings',
 					class: 'settings'
 				});
-
-
-				
 			}
 
- 
 			return modules;
 		},
 		avatarURL() {
@@ -174,11 +159,10 @@ export default {
 
 			//todo: work on the overview
 			modules.push({
-					link: `/${this.currentProjectKey}/collections`,
-					name: this.$t('overview'),
-					icon: 'cloud'
-					 
-				});
+				link: `/${this.currentProjectKey}/overview`,
+				name: this.$t('overview'),
+				icon: 'cloud'
+			});
 
 			modules.push({
 				link: `/${this.currentProjectKey}/collections`,

@@ -39,6 +39,8 @@ const SettingsPermissions = () =>
 const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
+const overview = () => import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
+
 Vue.use(Router);
 
 const router = new Router({
@@ -54,6 +56,10 @@ const router = new Router({
 		}
 	},
 	routes: [
+		{
+			path: '/:project/overview',
+			component: overview
+		},
 		{
 			path: '/:project/collections',
 			component: Collections
