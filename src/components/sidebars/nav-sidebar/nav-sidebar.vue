@@ -245,7 +245,7 @@ aside {
 }
 
 ::-webkit-scrollbar {
-	width: 10px; /* width of the entire scrollbar */
+	width: 5px; /* width of the entire scrollbar */
   }
   
   /* Handle */
@@ -259,5 +259,24 @@ aside {
 	background: #555; /* color of the scrollbar handle on hover */
   }
 
+  body, .v-table {
+    overflow-x: hidden !important; /* Prevent horizontal scrolling */
+  }
+</style>
+
+<style>
+[type="date"] {
+	background:#fff url(https://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/calendar_2.png)  97% 50% no-repeat ;
+  }
+  [type="date"]::-webkit-inner-spin-button {
+	display: none;
+  }
+  [type="date"]::-webkit-calendar-picker-indicator {
+	opacity: 0;
+  }
+  
+  
+
   
 </style>
+

@@ -526,3 +526,33 @@ export default {
 	}
 };
 </script>
+
+<style>
+  /* Style for even rows */
+  .row:nth-child(even) {
+    background-color: #f2f2f2 !important; /* Light gray background for even rows */
+  }
+
+  /* Style for odd rows */
+  .row:nth-child(odd) {
+    background-color: #ffffff !important; /* White background for odd rows */
+  }
+
+  /* Style for rows with a specific class */
+  .row.highlight {
+    background-color: #ffeeba !important; /* Light orange background for rows with class 'highlight' */
+  }
+
+  /* Style for rows with specific data attribute */
+  .row[data-status="active"] {
+    background-color: #c3e6cb !important; /* Light green background for rows with 'data-status="active"' */
+  }
+
+  /* Hover effect */
+  .row:hover {
+    background-color: #e9ecef !important; /* Light gray background on hover */
+  }
+  
+
+</style>
+

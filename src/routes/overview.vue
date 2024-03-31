@@ -29,10 +29,10 @@
 
         <div class="overview">
 
-           
+
 
             <div class="chart-card">
-              Attendance
+                Attendance
                 <div ref="attendance_bar_chart"></div>
             </div>
 
@@ -41,14 +41,14 @@
                 <div ref="average_working_hours"></div>
             </div>
 
-            
+
             <div class="chart-card">
-                <h1>{{ attendance }}</h1>
+
                 <div ref="chart"></div>
             </div>
 
-           
-           
+
+
 
 
         </div>
@@ -70,22 +70,35 @@ export default {
                 { label: 'Category C', value: 50 }
             ],
             attendanceData: [
-                { name: 'Monday', count: 30 },
-                { name: 'Tuesday', count: 25 },
-                { name: 'Wednesday', count: 35 },
-                { name: 'Thursday', count: 40 },
-                { name: 'Friday', count: 45 }
+                { name: 'Mon', count: 30 },
+                { name: 'Tue', count: 25 },
+                { name: 'Wed', count: 35 },
+                { name: 'Thur', count: 40 },
+                { name: 'Fri', count: 45 },
+                { name: 'Sat', count: 55 },
+                { name: 'Sun', count: 15 }
             ],
             lineData: [
                 { date: '2024-03-01', value: 10 },
                 { date: '2024-03-02', value: 15 },
                 { date: '2024-03-03', value: 20 },
                 { date: '2024-03-04', value: 18 },
-                { date: '2024-03-05', value: 25 }
+                { date: '2024-03-05', value: 25 },
+                { date: '2024-03-06', value: 10 },
+                { date: '2024-03-07', value: 15 },
+                { date: '2024-03-08', value: 20 },
+                { date: '2024-03-09', value: 18 },
+                { date: '2024-03-10', value: 25 }
             ],
         };
     },
     methods: {
+        getDayOfWeekName(dateString) {
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+            const date = new Date(dateString);
+            const dayOfWeek = date.getDay();
+            return daysOfWeek[dayOfWeek];
+        },
         lineGraph() {
 
             const container = this.$refs.average_working_hours;
@@ -101,7 +114,7 @@ export default {
                 .attr('transform', `translate(${margin.left},${margin.top})`);
 
             const x = d3.scaleTime()
-                .domain(d3.extent(this.lineData, d => new Date(d.date)))
+                .domain(d3.extent(this.lineData, d =>parseInt(""+new Date(d.date).getDate(),10)))
                 .range([0, width]);
 
             const y = d3.scaleLinear()
@@ -109,7 +122,7 @@ export default {
                 .range([height, 0]);
 
             const line = d3.line()
-                .x(d => x(new Date(d.date)))
+                .x(d => x( parseInt(""+new Date(d.date).getDate(),10)))
                 .y(d => y(d.value));
 
             svg.append('path')
@@ -224,18 +237,21 @@ export default {
     mounted() {
         // this.circleChart();
         this.barChart();
-    this.lineGraph();
+        this.lineGraph();
 
-       
+
     },
 };
 </script>
 
 <style>
-.chart-card{
-    float: left; width:450px;   padding: 10px;
+.chart-card {
+    float: left;
+    width: 450px;
+    padding: 10px;
     margin: 10px;
 }
+
 .bar {
     fill: steelblue;
 }

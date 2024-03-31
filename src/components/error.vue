@@ -1,9 +1,7 @@
 <template>
 	<transition name="error">
 		<div class="v-error">
-			<div>
-				<img :src="logoImagePath" alt="Logo" />
-			</div>
+			 
 			<div class="circle" :style="{ borderColor: 'var(--' + color + ')' }">
 				<v-icon class="icon" :class="icon" :name="icon" x-large :color="`--${color}`" />
 			</div>
@@ -51,7 +49,7 @@ export default {
 
 <style lang="scss" scoped>
 .v-error {
-	background: #f1f1f1;
+	background: #fff;
 	padding: 10px;
 	display: flex;
 	justify-content: center;
@@ -59,8 +57,7 @@ export default {
 	flex-direction: column;
 	margin: 100px 0;
 	width: 300px;
-	height: 300px;
-	rotate: 20deg;
+	height: 300px; 
 	border-radius: 3rem;
 
 	.circle {
