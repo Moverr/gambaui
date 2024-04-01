@@ -244,24 +244,7 @@ aside {
 	}
 }
 
-::-webkit-scrollbar {
-	width: 5px; /* width of the entire scrollbar */
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-	background: #888; /* color of the scrollbar handle */
-	border-radius: 5px; /* roundness of the scrollbar handle */
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-	background: #555; /* color of the scrollbar handle on hover */
-  }
-
-  body, .v-table {
-    overflow-x: hidden !important; /* Prevent horizontal scrolling */
-  }
+ 
 </style>
 
 <style>
