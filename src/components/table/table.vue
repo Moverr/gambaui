@@ -11,27 +11,16 @@
 				<button v-tooltip="$t('enable_manual_sorting')" @click="startManualSorting">
 					<v-icon name="sort" />
 				</button>
-				
 			</div>
-			<div v-if="selectable" class="select cell" style="flex-basis:50px;">
-
-			
+			<div v-if="selectable" class="select cell">
 				<v-checkbox
 					id="select-all"
 					:inputValue="allSelected"
 					name="select-all"
 					value="all"
-					@change="selectAll" style="float: left;"
+					@change="selectAll"
 				/>
-
-				 
 			</div>
-
-		 
-
-			  
- 
-			 
 			<div
 				v-for="({ field, name }, index) in columns"
 				:key="field"
@@ -40,7 +29,6 @@
 				}"
 				class="cell"
 			>
-		 
 				<button
 					v-if="sortable && !isRelational(columns[index].fieldInfo)"
 					:class="{ active: sortVal.field === field }"
@@ -60,9 +48,6 @@
 					/>
 				</button>
 
-
-				
-				
 				<span
 					v-else
 					v-tooltip="
@@ -112,7 +97,6 @@
 						@click.stop="$router.push(row[link])"
 						@keyup.enter.stop="$router.push(row[link])"
 					>
-					
 						<div
 							v-if="manualSortField"
 							class="manual-sort cell"
@@ -121,30 +105,14 @@
 						>
 							<v-icon name="drag_handle" />
 						</div>
-						<div style="flex-basis:150px;">
-						<div v-if="selectable" class="cell select" @click.stop   
-						style="width:90px;"
-						 >
+						<div v-if="selectable" class="cell select" @click.stop>
 							<v-checkbox
 								:id="'check-' + row[primaryKeyField]"
 								:value="`${row[primaryKeyField]}`"
 								:inputValue="selection.includes(row[primaryKeyField])"
 								@change="toggleCheckbox(row[primaryKeyField])"
-								style="float: left;" 
 							/>
-							<v-icon name="edit" style="float: left;"
-							@click.stop="$router.push(row[link])"   />
-							<v-icon name="storage" style="float: left;"
-							@click.stop="$router.push(row[link])" />
-							  
 						</div>
- 
-
-
-					</div>
-						 
-
-
 						<div
 							v-for="{ field, fieldInfo } in columns"
 							:key="field"
@@ -211,7 +179,6 @@
 							}"
 							class="cell"
 						>
-						 
 							<div v-if="row[field] === '' || isNil(row[field])" class="empty">
 								--
 							</div>
@@ -227,7 +194,6 @@
 							/>
 							<template v-else>
 								{{ row[field] }}
-								 
 							</template>
 						</div>
 					</div>

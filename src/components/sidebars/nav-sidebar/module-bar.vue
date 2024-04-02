@@ -167,8 +167,9 @@ export default {
 			modules.push({
 				link: `/${this.currentProjectKey}/collections`,
 				name: this.$tc('collection', 2),
-				icon: 'box'
+				icon: 'folders'
 			});
+			
 
 			if (
 				this.permissions.directus_users.read !== 'none' ||
@@ -181,13 +182,13 @@ export default {
 				});
 			}
 
-			if (this.permissions.directus_files.read !== 'none') {
-				modules.push({
-					link: `/${this.currentProjectKey}/files`,
-					name: this.$t('file_library'),
-					icon: 'collections'
-				});
-			}
+			// if (this.permissions.directus_files.read !== 'none') {
+			// 	modules.push({
+			// 		link: `/${this.currentProjectKey}/files`,
+			// 		name: this.$t('file_library'),
+			// 		icon: 'collections'
+			// 	});
+			// }
 
 			// modules.push({
 			// 	link: 'https://docs.directus.io',

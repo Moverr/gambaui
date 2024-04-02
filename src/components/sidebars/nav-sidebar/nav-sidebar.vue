@@ -8,7 +8,7 @@
 				<module-bar />
 
 				<section class="main-bar">
-					<project-switcher />
+					<!-- <project-switcher /> -->
 
 					<nav-menu
 						v-if="customCollections === null"
@@ -65,6 +65,8 @@ export default {
 
 			if (collections == null) return [];
 
+			console.log(collections);
+
 			return Object.values(collections)
 				.filter(
 					collection =>
@@ -97,6 +99,7 @@ export default {
 		},
 		customCollections() {
 			const collectionListing = this.currentUser.role.collection_listing;
+			console.log(collectionListing)
 			const hasCustom = Array.isArray(collectionListing) && collectionListing.length > 0;
 
 			if (hasCustom === false) return null;
@@ -109,7 +112,17 @@ export default {
 							c => c.collection === collection
 						);
 
-						return {
+						if	(collection === "salary") 
+
+						 return {
+							link: `/${this.currentProjectKey}/payroll`,
+							name: "payroll",
+							icon: collectionInfo ? collectionInfo.icon : null
+						}
+
+						else
+
+						 return {
 							link: `/${this.currentProjectKey}/collections/${collection}`,
 							name: this.$helpers.formatCollection(collection),
 							icon: collectionInfo ? collectionInfo.icon : null
@@ -119,13 +132,28 @@ export default {
 			});
 		},
 		defaultCollections() {
-			return this.collections
-				.map(({ collection, icon }) => ({
+			
+			let collect = 
+			this.collections
+				.map(({ collection, icon }) => (
+					(collection === "salary" || collection === "payroll" ) ?
+				{
+					link: `/${this.currentProjectKey}/payroll`,
+					name: "payroll ",
+					icon
+				} :
+				{
 					link: `/${this.currentProjectKey}/collections/${collection}`,
 					name: this.$helpers.formatCollection(collection),
 					icon
-				}))
+				}
+				
+				))
+				 
 				.sort((a, b) => (a.name > b.name ? 1 : -1));
+
+
+				return collect;
 		}
 	},
 	methods: {

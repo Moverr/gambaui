@@ -39,7 +39,8 @@ const SettingsPermissions = () =>
 const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
-const overview = () => import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
+	const overview = () =>
+	import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
 
 Vue.use(Router);
 
@@ -59,6 +60,11 @@ const router = new Router({
 		{
 			path: '/:project/overview',
 			component: overview
+		},
+		{
+			path: '/:project/payroll',
+			props: true,
+			component: Items
 		},
 		{
 			path: '/:project/collections',
@@ -136,10 +142,10 @@ const router = new Router({
 					);
 			}
 		},
-		{
-			path: '/:project/files',
-			component: FileLibrary
-		},
+		// {
+		// 	path: '/:project/files',
+		// 	component: FileLibrary
+		// },
 		{
 			path: '/:project/collections/directus_files/:primaryKey',
 			component: Item,
@@ -158,6 +164,20 @@ const router = new Router({
 			component: Settings
 			// alias: '/:project/overview'
 		},
+
+		{
+			path: '/:project/salary',
+			component: Items,
+			alias: '/:project/salary'
+		},
+
+		{
+			path: '/:project/payroll',
+			component: Items,
+			alias: '/:project/payroll'
+		},
+
+
 
 		{
 			path: '/:project/collections/directus_users/:primaryKey',
