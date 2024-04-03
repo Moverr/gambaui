@@ -136,12 +136,12 @@ export default {
 			let collect = 
 			this.collections
 				.map(({ collection, icon }) => (
-					(collection === "salary" || collection === "payroll" ) ?
-				{
-					link: `/${this.currentProjectKey}/payroll`,
-					name: "payroll ",
-					icon
-				} :
+				// 	(collection === "salary" || collection === "payroll" ) ?
+				// {
+				// 	link: `/${this.currentProjectKey}/payroll`,
+				// 	name: "payroll ",
+				// 	icon
+				// } :
 				{
 					link: `/${this.currentProjectKey}/collections/${collection}`,
 					name: this.$helpers.formatCollection(collection),

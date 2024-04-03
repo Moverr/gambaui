@@ -1,6 +1,7 @@
 <template>
 	<v-not-found v-if="notFound" />
 	<div v-else class="route-item-listing">
+     
 		<v-header
 			info-toggle
 			:item-detail="false"
@@ -73,15 +74,18 @@
                     @click="printPage"
 					 
 				/>
-				<v-header-button
-					v-if="addButton && !activity"
-					key="add"
-					icon="add"
-					icon-color="button-primary-text-color"
-					background-color="button-primary-background-color"
-					:label="$t('new')"
-					:to="createLink"
-				/>
+
+                <v-header-button
+                v-if="addButton && !activity"
+                key="add"
+                icon="add"
+                icon-color="button-primary-text-color"
+                background-color="button-primary-background-color"
+                :label="$t('new')"
+                :to="createLink"
+            />
+
+
 			</template>
 		</v-header>
 
@@ -174,18 +178,18 @@ import { isEqual, isEmpty, isNil, find, findIndex, keyBy } from 'lodash';
 import api from '../api';
 
 export default {
-	name: 'Items',
-	metaInfo() {
+    name: 'PayrollItems',
+    metaInfo() {
 		return {
 			title: this.$helpers.formatTitle(this.collection)
 		};
 	},
-	components: {
+    components: {
 		VSearchFilter,
 		VNotFound,
 		VCreateBookmark
 	},
-	data() {
+    data() {
 		return {
 			selection: [],
 			meta: null,
@@ -195,7 +199,7 @@ export default {
 			notFound: false
 		};
 	},
-	computed: {
+    computed: {
 		...mapState(['currentProjectKey']),
 		activity() {
 			return this.collection === 'directus_activity';
@@ -213,7 +217,7 @@ export default {
 				return `/${this.currentProjectKey}/${this.collection.substr(9)}/+`;
 			}
 
-			return `/${this.currentProjectKey}/collections/${this.collection}/+`;
+			return `/${this.currentProjectKey}/collections/${this.collection}/create`;
 		},
 		breadcrumb() {
 			if (this.collection === 'directus_users') {
@@ -552,7 +556,7 @@ export default {
 			return enabled;
 		}
 	},
-	watch: {
+    watch: {
 		$route() {
 			if (this.$route.query.b) {
 				this.$router.replace({
@@ -561,12 +565,13 @@ export default {
 			}
 		}
 	},
-	methods: {
+    methods: {
+        
 		keyBy: keyBy,
 		setMeta(meta) {
 			this.meta = meta;
 		},
-		printPage() {
+        printPage() {
       window.print();
     },
 		editCollection() {
@@ -694,17 +699,12 @@ export default {
 				});
 		}
 	},
-	beforeRouteEnter(to, from, next) {
-		
-		// collection.project = "payroll"
-		console.log("Wonders");
+    beforeRouteEnter(to, from, next) {
+        console.log("Plain and simple");
         console.log(to);
         console.log(to.params);
-		to.params.collection = 'payroll'
-		to.params.collection = 'payroll'
-
+        to.params.collection = 'payroll'
 		let { collection } = to.params;
-
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
 
@@ -730,6 +730,8 @@ export default {
 				});
 			})
 			.catch(error => {
+                console.log("Plain and simple");
+                console.log(error);
 				store.dispatch('loadingFinished', id);
 				this.$events.emit('error', {
 					notify: this.$t('something_went_wrong_body'),
@@ -737,7 +739,8 @@ export default {
 				});
 			});
 	},
-	beforeRouteUpdate(to, from, next) {
+    beforeRouteUpdate(to, from, next) {
+        to.params.collection = 'payroll'
 		const { collection } = to.params;
 
 		this.preferences = null;
@@ -774,8 +777,12 @@ export default {
 				});
 			});
 	}
-};
+
+}
+
 </script>
+
+
 
 <style lang="scss" scoped>
 .bookmark,
@@ -831,3 +838,5 @@ export default {
 	margin-bottom: 64px;
 }
 </style>
+
+

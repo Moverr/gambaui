@@ -12,6 +12,8 @@ import Items from './routes/items.vue';
 import FileLibrary from './routes/file-library.vue';
 import Item from './routes/item.vue';
 import Login from './routes/login.vue';
+import PayrollItems from './routes/payrollitems.vue';
+import PayrollItem from './routes/payrollitem.vue';
 
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
 const ResetPassword = () =>
@@ -61,15 +63,26 @@ const router = new Router({
 			path: '/:project/overview',
 			component: overview
 		},
-		{
-			path: '/:project/payroll',
-			props: true,
-			component: Items
-		},
+		// {
+		// 	path: '/:project/collections/payroll',
+		// 	props: true,
+		// 	component: PayrollItems
+		// },
 		{
 			path: '/:project/collections',
 			component: Collections
 		},
+		{
+			path: '/:project/collections/payroll',
+			props: true,
+			component: PayrollItems
+		},
+		{
+			path: '/:project/collections/payroll/create',
+			props: true,
+			component: PayrollItem
+		},
+
 		{
 			path: '/:project/collections/:collection',
 			props: true,
@@ -165,18 +178,7 @@ const router = new Router({
 			// alias: '/:project/overview'
 		},
 
-		{
-			path: '/:project/salary',
-			component: Items,
-			alias: '/:project/salary'
-		},
-
-		{
-			path: '/:project/payroll',
-			component: Items,
-			alias: '/:project/payroll'
-		},
-
+		 
 
 
 		{

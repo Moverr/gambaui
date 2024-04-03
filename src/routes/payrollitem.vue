@@ -1,172 +1,7 @@
 <template>
-	<v-not-found v-if="notFound" />
-
-	<div v-else-if="error">
-		<v-header />
-		<v-error
-			v-if="error"
-			icon="error_outline"
-			color="warning"
-			:title="$t('server_trouble')"
-			:body="$t('server_trouble_copy')"
-		/>
-	</div>
- 
-	<div v-else-if="fields === null">
-		<v-header :icon-link="`/${currentProjectKey}/collections`" />
-		<v-loader area="content" />
-	</div>
-
-	<div v-else :key="`${collection}-${primaryKey}`" class="edit">
-		<v-header
-			:breadcrumb="breadcrumb"
-			:info-toggle="!newItem && !batch && !activityDetail"
-			:icon-link="iconLink"
-			:icon="singleItem ? collectionInfo.icon || 'box' : 'arrow_back'"
-			item-detail
-			:settings="collection === 'directus_webhooks'"
-		>
-			<template v-if="status" slot="title">
-				<span
-					v-tooltip="statusName"
-					class="status-indicator"
-					:style="{ backgroundColor: `var(--${statusColor})` }"
-				/>
-			</template>
-			<template slot="buttons">
-				<v-header-button
-					v-if="!newItem && !singleItem && permission.delete !== 'none'"
-					icon="delete_outline"
-					icon-color="white"
-					background-color="danger"
-					hover-color="danger-dark"
-					:label="$t('delete')"
-					@click="confirmRemove = true"
-				/>
-
-				<v-header-button
-					v-if="batch && permission.update !== 'none'"
-					:disabled="!editing"
-					:loading="saving"
-					:label="$t('save')"
-					icon="check"
-					icon-color="button-primary-text-color"
-					background-color="button-primary-background-color"
-					hover-color="button-primary-background-color-hover"
-					@click="confirmBatchSave = true"
-				/>
-
-				<v-header-button
-					v-else-if="isNew ? permission.create !== 'none' : permission.update !== 'none'"
-					:disabled="!editing"
-					:loading="saving"
-					:label="$t('save')"
-					:options="saveOptions"
-					icon="check"
-					icon-color="button-primary-text-color"
-					background-color="button-primary-background-color"
-					hover-color="button-primary-background-color-hover"
-					@click="singleItem ? save('stay') : save('leave')"
-					@input="save"
-				/>
-			</template>
-		</v-header>
-
-		<v-info-sidebar v-if="!newItem && !batch" wide item-detail>
-			<v-activity
-				class="activity"
-				:activity="activity"
-				:revisions="revisions"
-				:loading="activityLoading"
-				:comment-permission="permission.comment"
-				@input="postComment"
-				@revert="revertActivity = $event"
-			/>
-		</v-info-sidebar>
-		<v-info-sidebar v-else wide>
-			<span class="type-note">No settings</span>
-		</v-info-sidebar>
-
-		<v-form
-			ref="form"
-			:key="formKey"
-			:readonly="readonly"
-			:fields="fields"
-			:values="values"
-			:collection="collection"
-			:batch-mode="batch"
-			:permissions="permission"
-			:new-item="newItem"
-			:primary-key="primaryKey"
-			@unstage-value="unstageValue"
-			@stage-value="stageValue"
-		/>
-
-		<portal v-if="confirmRemove" to="modal">
-			<v-confirm
-				:message="
-					batch
-						? $tc('batch_delete_confirm', primaryKey.split(',').length, {
-								count: primaryKey.split(',').length
-						  })
-						: $t('delete_are_you_sure')
-				"
-				:busy="confirmRemoveLoading"
-				@cancel="confirmRemove = false"
-				@confirm="remove"
-			/>
-		</portal>
-
-		<portal v-if="confirmNavigation" to="modal">
-			<v-confirm
-				:title="$t('unsaved_changes')"
-				:message="$t('unsaved_changes_copy')"
-				:confirm-text="$t('keep_editing')"
-				:cancel-text="$t('discard_changes')"
-				@confirm="confirmNavigation = false"
-				@cancel="
-					$router.push(leavingTo);
-					confirmNavigation = false;
-				"
-			/>
-		</portal>
-
-		<portal v-if="confirmBatchSave" to="modal">
-			<v-confirm
-				:message="$t('update_confirm', { count: primaryKey.split(',').length })"
-				:confirm-text="$t('update')"
-				@confirm="save('leave')"
-				@cancel="confirmBatchSave = false"
-			/>
-		</portal>
-
-		<portal v-if="revertActivity" to="modal">
-			<v-modal
-				:title="$t('preview_and_revert')"
-				:buttons="{
-					revert: {
-						text: $t('revert'),
-						loading: reverting
-					}
-				}"
-				@revert="revertItem(revertActivity.revision.id)"
-				@close="revertActivity = false"
-			>
-				<div class="revert">
-					<v-notice color="warning">
-						{{ $t('revert_copy', { date: $d(revertActivity.date, 'long') }) }}
-					</v-notice>
-					<v-form
-						readonly
-						:values="revertActivity.revision.data"
-						:collection="collection"
-						:fields="fields"
-						full-width
-					/>
-				</div>
-			</v-modal>
-		</portal>
-	</div>
+    <div>
+        Create item 
+    </div>
 </template>
 
 <script>
@@ -183,9 +18,10 @@ import api from '../api';
 import { mapState } from 'vuex';
 import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 
+
 export default {
-	name: 'Edit',
-	metaInfo() {
+    name: 'PayrollItem',
+    metaInfo() {
 		const collection = this.collection.startsWith('directus_')
 			? this.$helpers.formatTitle(this.collection.substr(9))
 			: this.$helpers.formatTitle(this.collection);
@@ -216,13 +52,14 @@ export default {
 		VError,
 		VActivity
 	},
-	props: {
+    props: {
 		primaryKey: {
 			type: null,
 			required: true
 		}
 	},
-	data() {
+
+    data() {
 		return {
 			saving: false,
 
@@ -246,7 +83,8 @@ export default {
 			formKey: shortid.generate()
 		};
 	},
-	computed: {
+
+    computed: {
 		...mapState(['currentProjectKey']),
 		collection() {
 			if (this.$route.path.includes('settings/webhooks')) return 'directus_webhooks';
@@ -560,7 +398,8 @@ export default {
 			return null;
 		}
 	},
-	watch: {
+
+    watch: {
 		$route() {
 			this.fetchActivity();
 		},
@@ -576,7 +415,7 @@ export default {
 			this.checkOtherUsers();
 		}
 	},
-	mounted() {
+    mounted() {
 		const handler = () => {
 			if (this.editing) {
 				this.save('stay');
@@ -958,7 +797,8 @@ export default {
 				});
 		}
 	},
-	beforeRouteEnter(to, from, next) {
+    beforeRouteEnter(to, from, next) {
+        to.params.collection = 'payroll'
 		let { collection, primaryKey } = to.params;
 
 		if (!collection && to.path.includes('settings/webhooks')) collection = 'directus_webhooks';
@@ -1010,6 +850,7 @@ export default {
 			});
 	},
 	beforeRouteUpdate(to, from, next) {
+        to.params.collection = 'payroll'
 		const { collection, primaryKey } = to.params;
 		const exists =
 			Object.keys(this.$store.state.collections).includes(collection) ||
@@ -1095,31 +936,5 @@ export default {
 
 		return next(false);
 	}
-};
+}
 </script>
-
-<style lang="scss" scoped>
-.edit {
-	padding: var(--page-padding-top) var(--page-padding) var(--page-padding-bottom);
-}
-
-.revert {
-	padding: 20px;
-
-	.notice {
-		margin-bottom: 40px;
-	}
-}
-
-.status-indicator {
-	width: 10px;
-	height: 10px;
-	border-radius: 5px;
-	margin-left: 8px;
-	margin-top: 1px;
-}
-
-.activity {
-	margin-bottom: 64px;
-}
-</style>
