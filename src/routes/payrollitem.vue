@@ -64,9 +64,63 @@
 
         <div v-if="employeeDetail !== '' && employeeDetail !== undefined" class="inline-form "
             style="margin-top: 10px; margin-left:40px;">
-            <label for=""><strong>Name:</strong> {{ employeeDetail.first_name }} {{ employeeDetail.last_name }} </label>
-            <label for="">Job Status: {{ employeeDetail.job_status }} </label>
-            <label for="">Gross Amount: {{ employeeDetail.gross_salary }} </label>
+            <label for="">
+                <h1>Name:</h1> {{ employeeDetail.first_name }} {{ employeeDetail.last_name }}
+            </label>
+            <label for="">
+                <h1> Job Status: </h1>{{ employeeDetail.job_status }}
+            </label>
+            <label for="">
+                <h1>Gross Amount: </h1>{{ employeeDetail.gross_salary }} {{ employeeDetail.currency }}
+            </label>
+
+            <div v-for="ledger in ledgers" :key="ledger.id">
+
+
+                <h1>Payment Ledger </h1>
+                Date: {{ ledger.created_on }}
+                <h1>Details </h1>
+                <table class="table">
+                    <tr>
+                        <th>
+                            Amount
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Reason
+                        </th>
+
+                    </tr>
+
+                    <tr v-for="detail in ledger.amount_details" :key="detail.id">
+
+                        <td> {{ detail.payment_ledger_detail_id.amount }} {{ employeeDetail.currency }}</td>
+                        <td> {{ detail.payment_ledger_detail_id.type }}</td>
+
+                        <td> {{ detail.payment_ledger_detail_id.details }}</td>
+
+
+                    </tr>
+                    <tr>
+                        <th>Sub Total </th>
+                        <td> {{ totalDeductions }} {{ employeeDetail.currency }} </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div v-if="netAmont !== null && netAmont !== undefined" class="inline-form "
+            style="margin-top: 10px; margin-left:40px;">
+            <table>
+                <tr>
+                    <th>Net Amount</th>
+                    <td> {{ netAmont }} {{ employeeDetail.currency }}</td>
+                </tr>
+            </table>
+
 
         </div>
     </div>
@@ -99,25 +153,91 @@ export default {
             selectedDepartment: "",
             selectedEmployee: "",
             employeeDetail: "",
-            branches: [], departments: [], employees: []
+            branches: [], departments: [], employees: [], ledgers: [],
+            totalDeductions: null,
+            netAmont: null
         };
     },
 
     methods: {
 
+        calculateNetAmount() {
+            //todo: map to find the reduce 
+            let ledgers = this.ledgers;
+
+            const totalAmount = ledgers.reduce((acc, item) => {
+                const amountDetails = item.amount_details || [];
+                amountDetails.forEach(detail => {
+                    console.log("------------------------------------ ")
+                    console.log(detail.payment_ledger_detail_id.type)
+                    console.log(detail.payment_ledger_detail_id.amount)
+                    console.log(" ----------------------------------- ")
+                    if (detail.payment_ledger_detail_id.type === 'increment') {
+                        acc = eval(acc + detail.payment_ledger_detail_id.amount);
+                    } else if (detail.payment_ledger_detail_id.type === 'decrement') {
+                        acc = eval(acc - detail.payment_ledger_detail_id.amount);
+                    }
+                });
+                return acc;
+            }, 0);
+
+            console.log("Total amount:", totalAmount);
+            console.log("Blind date")
+            console.log(ledgers);
+
+            this.totalDeductions = totalAmount;
+
+
+            this.netAmont = eval(this.employeeDetail.gross_salary - totalAmount);
+            // this.totalDeductions;
+        },
 
         displaySelectedEmployee() {
             let br = this.employees;
             let bingo = br.find(x => x.id == this.selectedEmployee);
             this.employeeDetail = bingo;
             console.log(this.employeeDetail)
+            this.fetchPaymentLedger();
 
-        }
-        ,
+
+
+        },
+        fetchPaymentLedger() {
+            console.log("Payment Ledger")
+            const filter = {
+                'employees.id': { eq: this.selectedEmployee }
+            };
+
+            this.$api.getItems("payment_ledger", {
+                fields: '*.*,amount_details.*,amount_details.payment_ledger_detail_id.*', filter
+
+
+            })
+                .then(res => res.data)
+                .then(data => {
+                    console.log(data);
+
+                    this.ledgers = data;
+                    this.calculateNetAmount();
+                })
+                .catch(error => {
+                    console.log("Error impl");
+                    console.log(error);
+                    this.netAmont = null;
+                });
+
+
+        },
+
         fetchEmployees() {
-            console.log("Beneere")
+            console.log("Employees")
+            const filter = {
+                'department.id': { eq: this.selectedDepartment }
+            };
+
             this.$api.getItems("employees", {
-                fields: '*.*'
+                fields: '*.*', filter
+
 
             })
                 .then(res => res.data)
@@ -132,9 +252,15 @@ export default {
 
 
         fetchDepartments() {
-            console.log("Beneere")
+            console.log("Departments")
+
+            const filter = {
+                'branch.id': { eq: this.selectedBranch }
+            };
+
+
             this.$api.getItems("departments", {
-                fields: '*.*'
+                fields: '*.*', filter
 
             })
                 .then(res => res.data)
@@ -149,7 +275,8 @@ export default {
 
 
         fetchBranches() {
-            console.log("Beneere")
+            console.log("Branches")
+            console.log(this.$api)
             this.$api.getItems("branches", {
                 fields: '*.*'
 
@@ -211,5 +338,33 @@ export default {
 
 .activity {
     margin-bottom: 64px;
+}
+
+
+.table {
+    width: 500px;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: 700;
+    word-spacing: 1%;
 }
 </style>
