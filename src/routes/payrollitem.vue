@@ -14,21 +14,13 @@
                     :style="{ backgroundColor: `var(--${statusColor})` }" />
             </template>
             <template slot="buttons">
-                <v-header-button
-                
-                key="add"
-                icon="print"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="Print"
-                @click="printPage"
-                 
-            />
+                <v-header-button key="add" icon="print" icon-color="button-primary-text-color"
+                    background-color="button-primary-background-color" :label="Print" @click="printPage" />
 
                 <v-header-button :loading="saving" :label="$t('save')" :options="saveOptions" icon="check"
                     icon-color="button-primary-text-color" background-color="button-primary-background-color"
                     hover-color="button-primary-background-color-hover"
-                    @click="singleItem ? save('stay') : save('leave')" @input="save" />
+                    @click="savePayroll" @input="save" />
             </template>
         </v-header>
 
@@ -112,9 +104,9 @@
 
 
                     </tr>
-                  
 
-                   
+
+
                 </table>
 
             </div>
@@ -176,9 +168,13 @@ export default {
     },
 
     methods: {
+
+        savePayroll(){
+            alert("Blunt and somple");
+        },
         printPage() {
-      window.print();
-    },
+            window.print();
+        },
         calculateNetAmount() {
             //todo: map to find the reduce 
             let ledgers = this.ledgers;
