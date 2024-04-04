@@ -14,7 +14,16 @@
                     :style="{ backgroundColor: `var(--${statusColor})` }" />
             </template>
             <template slot="buttons">
-
+                <v-header-button
+                
+                key="add"
+                icon="print"
+                icon-color="button-primary-text-color"
+                background-color="button-primary-background-color"
+                :label="Print"
+                @click="printPage"
+                 
+            />
 
                 <v-header-button :loading="saving" :label="$t('save')" :options="saveOptions" icon="check"
                     icon-color="button-primary-text-color" background-color="button-primary-background-color"
@@ -103,10 +112,9 @@
 
 
                     </tr>
-                    <tr>
-                        <th>Sub Total </th>
-                        <td> {{ totalDeductions }} {{ employeeDetail.currency }} </td>
-                    </tr>
+                  
+
+                   
                 </table>
 
             </div>
@@ -115,6 +123,14 @@
         <div v-if="netAmont !== null && netAmont !== undefined" class="inline-form "
             style="margin-top: 10px; margin-left:40px;">
             <table>
+                <tr>
+                    <th>Basic </th>
+                    <td> {{ employeeDetail.gross_salary }} {{ employeeDetail.currency }} </td>
+                </tr>
+                <tr>
+                    <th>Additions </th>
+                    <td> {{ totalDeductions }} {{ employeeDetail.currency }} </td>
+                </tr>
                 <tr>
                     <th>Net Amount</th>
                     <td> {{ netAmont }} {{ employeeDetail.currency }}</td>
@@ -160,7 +176,9 @@ export default {
     },
 
     methods: {
-
+        printPage() {
+      window.print();
+    },
         calculateNetAmount() {
             //todo: map to find the reduce 
             let ledgers = this.ledgers;
@@ -342,7 +360,7 @@ export default {
 
 
 .table {
-    width: 500px;
+    width: 600px;
     border-collapse: collapse;
 }
 
