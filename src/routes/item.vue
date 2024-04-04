@@ -527,6 +527,10 @@ export default {
 		fields() {
 			const fields = this.$store.state.collections[this.collection].fields;
 
+			console.log("Fields");
+            console.log(fields);
+			
+
 			return mapValues(fields, field => ({
 				...field,
 				name: formatTitle(field.field)
