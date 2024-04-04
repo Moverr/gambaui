@@ -188,7 +188,7 @@ export default {
             this.totalDeductions = totalAmount;
 
 
-            this.netAmont = eval(this.employeeDetail.gross_salary - totalAmount);
+            this.netAmont = eval(this.employeeDetail.gross_salary + totalAmount);
             // this.totalDeductions;
         },
 
