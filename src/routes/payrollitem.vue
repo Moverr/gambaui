@@ -19,8 +19,7 @@
 
                 <v-header-button :loading="saving" :label="$t('save')" :options="saveOptions" icon="check"
                     icon-color="button-primary-text-color" background-color="button-primary-background-color"
-                    hover-color="button-primary-background-color-hover"
-                    @click="savePayroll" @input="save" />
+                    hover-color="button-primary-background-color-hover" @click="savePayroll" @input="save" />
             </template>
         </v-header>
 
@@ -28,7 +27,27 @@
             <form action="" method="post">
 
                 <div class="  drop-down">
-                    <label for=""> Branches </label>
+                    <label for=""> From </label>
+                    <input class="datetime" type="datetime-local" name="from_date" id="start_date" v-model="fromDate">
+                </div>
+                &nbsp;
+                <div class="  drop-down">
+                    <label for=""> To </label>
+                    <input v-model="toDate" class="datetime" type="datetime-local" name="to_date" id="to_date">
+
+
+                </div>
+
+
+            </form>
+        </div>
+        <br />
+        <div class="inline-form " style="margin-top: 10px; margin-left:40px;">
+            <form action="" method="post">
+
+
+                <div class="  drop-down">
+                    <label for=""> Branch </label>
                     <select v-model="selectedBranch" @change='fetchDepartments'>
                         <option value="">Select Option </option>
                         <option v-for="branch in branches" :key="branch.id" :value="branch.id">
@@ -121,7 +140,7 @@
                 </tr>
                 <tr>
                     <th>Additions </th>
-                    <td> {{ totalDeductions }} {{ employeeDetail.currency }} </td>
+                    <td> {{ earnings_and_deductions }} {{ employeeDetail.currency }} </td>
                 </tr>
                 <tr>
                     <th>Net Amount</th>
@@ -153,7 +172,9 @@ import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 export default {
     name: 'PayrollItem',
     mounted() {
+        
         this.fetchBranches();
+
     },
     data() {
         return {
@@ -162,14 +183,63 @@ export default {
             selectedEmployee: "",
             employeeDetail: "",
             branches: [], departments: [], employees: [], ledgers: [],
-            totalDeductions: null,
-            netAmont: null
+            earnings_and_deductions: null,
+            netAmont: null, fromDate: this.getCurrentDateTime(), toDate: this.getCurrentDateTime()
         };
     },
 
     methods: {
 
-        savePayroll(){
+        getCurrentDateTime() {
+            const now = new Date();
+            // Format the date as yyyy-mm-ddThh:mm (required format for datetime-local input)
+            return now.toISOString().slice(0, 16);
+        },
+
+        async savePayroll() {
+            let from = this.fromDate;
+            let to = this.toDate;
+            let earnings_and_deductions = this.earnings_and_deductions;
+            let net_salary = this.netAmont;
+
+            let branch = this.selectedBranch;
+
+            let currency = this.employeeDetail.currency;
+
+            let department = this.selectedDepartment;
+
+            let employee = this.selectedEmployee;
+            let status = "draft";
+            let basic_salary = this.employeeDetail.gross_salary
+
+            const body = {
+                "basic_salary": basic_salary,
+                "earnings_and_deductions": earnings_and_deductions,
+                "net_salary": net_salary,
+                "branch": branch,
+                "currency": currency,
+                "department": department,
+                "employee": employee,
+                "from": from,
+                "to": to,
+                "status": status
+
+            };
+
+
+            try {
+                await this.$api.createItem('payroll', body);
+                alert("Saving done")
+
+            } catch (error) {
+                this.error = error;
+                console.error(error);
+            } finally {
+
+            }
+
+
+
             alert("Blunt and somple");
         },
         printPage() {
@@ -199,11 +269,11 @@ export default {
             console.log("Blind date")
             console.log(ledgers);
 
-            this.totalDeductions = totalAmount;
+            this.earnings_and_deductions = totalAmount;
 
 
             this.netAmont = eval(this.employeeDetail.gross_salary + totalAmount);
-            // this.totalDeductions;
+            // this.earnings_and_deductions;
         },
 
         displaySelectedEmployee() {
@@ -310,6 +380,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.datetime {
+    padding: 10px;
+    margin-left: 10px;
+}
+
 .inline-form {
 
     width: 1000%;

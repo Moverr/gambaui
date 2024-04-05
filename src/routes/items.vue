@@ -700,9 +700,6 @@ export default {
 		console.log("Wonders");
         console.log(to);
         console.log(to.params);
-		to.params.collection = 'payroll'
-		to.params.collection = 'payroll'
-
 		let { collection } = to.params;
 
 
