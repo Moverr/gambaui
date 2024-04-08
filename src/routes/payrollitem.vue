@@ -252,6 +252,8 @@ export default {
 		},
 
 		async savePayroll() {
+ 
+
 			let from = this.fromDate;
 			let to = this.toDate;
 			let earnings_and_deductions = this.earnings_and_deductions;
@@ -282,14 +284,20 @@ export default {
 
 			try {
 				await this.$api.createItem('payroll', body);
-				alert('Saving done');
+                alert("Record Saved Succesfully");
+               //  this.$router.push('/collections');
+                   this.$router.push('/hrsystem/collections/payroll');
+ 
+ 
+				
 			} catch (error) {
 				this.error = error;
 				console.error(error);
+                  this.$router.push('/hrsystem/collections/payroll/create');
 			} finally {
 			}
 
-			alert('Blunt and somple');
+			 
 		},
 		printPage() {
 			window.print();

@@ -165,7 +165,7 @@ export default {
 			});
 
 			modules.push({
-				link: `/${this.currentProjectKey}/collections`,
+				link: `/${this.currentProjectKey}/collections/employees`,
 				name: this.$tc('collection', 2),
 				icon: 'folders'
 			});
