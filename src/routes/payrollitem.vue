@@ -212,6 +212,10 @@ export default {
 		this.getBeginningOfMonth();
 		this.getLastDayOfMonth();
 	},
+    computed: {
+		...mapState(['permissions', 'currentUser', 'currentProjectKey']),
+		...mapGetters(['editing']),
+    },
 	data() {
 		return {
 			selectedBranch: '',
@@ -285,15 +289,13 @@ export default {
 			try {
 				await this.$api.createItem('payroll', body);
                 alert("Record Saved Succesfully");
-               //  this.$router.push('/collections');
-                   this.$router.push('/hrsystem/collections/payroll');
- 
- 
+             
+                   this.$router.push(`/${this.currentProjectKey}/collections/payroll`); 
 				
 			} catch (error) {
 				this.error = error;
 				console.error(error);
-                  this.$router.push('/hrsystem/collections/payroll/create');
+                  this.$router.push(`/${this.currentProjectKey}collections/payroll/create`);
 			} finally {
 			}
 
