@@ -1,58 +1,47 @@
 <template>
-    <div class="dashboard">
-        <div class="overview">
-            <h1>{{ message }}</h1>
-            <div class="number-card">
-                <div class="title-card">Head count</div>
-                <div class="amount-card">345</div>
-                <div class="percent-card">12 Increase</div>
-            </div>
+	<div class="dashboard">
+		<div class="overview">
+			<h1>{{ message }}</h1>
+			<div class="number-card">
+				<div class="title-card">Head count</div>
+				<div class="amount-card">{{ total_head_count }}</div>
+			</div>
 
-            <div class="number-card">
-                <div class="title-card">New Hires</div>
-                <div class="amount-card">14</div>
-                <div class="percent-card">12 Increase</div>
-            </div>
+			<div class="number-card">
+				<div class="title-card">New Hires</div>
+				<div class="amount-card">{{new_head_count}}</div>
+			 
+			</div>
 
-            <div class="number-card">
-                <div class="title-card">Terminations</div>
-                <div class="amount-card">03</div>
-                <div class="percent-card">12 Increase</div>
-            </div>
+			<div class="number-card">
+				<div class="title-card">Terminations</div>
+				<div class="amount-card">0</div>
+			 
+			</div>
 
-            <div class="number-card">
-                <div class="title-card">Jobs</div>
-                <div class="amount-card">12</div>
-                <div class="percent-card">12 Increase</div>
-            </div>
-        </div>
+			<div class="number-card">
+				<div class="title-card">Jobs</div>
+				<div class="amount-card">0</div>
+				 
+			</div>
+		</div>
 
-        <div class="overview">
+		<div class="overview">
+			<div class="chart-card">
+				Attendance
+				<div ref="attendance_bar_chart"></div>
+			</div>
 
+			<div class="chart-card">
+				Average working hours
+				<div ref="average_working_hours"></div>
+			</div>
 
-
-            <div class="chart-card">
-                Attendance
-                <div ref="attendance_bar_chart"></div>
-            </div>
-
-            <div class="chart-card">
-                Average working hours
-                <div ref="average_working_hours"></div>
-            </div>
-
-
-            <div class="chart-card">
-
-                <div ref="chart"></div>
-            </div>
-
-
-
-
-
-        </div>
-    </div>
+			<div class="chart-card">
+				<div ref="chart"></div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -60,6 +49,15 @@ import * as d3 from 'd3';
 
 export default {
     name: 'Overvew',
+    mounted() {
+        // this.circleChart();
+        this.barChart();
+        this.lineGraph();
+        this.fetchEmployees();
+
+
+    },
+
     data() {
         return {
             message: 'Overview',
@@ -70,29 +68,76 @@ export default {
                 { label: 'Category C', value: 50 }
             ],
             attendanceData: [
-                { name: 'Mon', count: 30 },
-                { name: 'Tue', count: 25 },
-                { name: 'Wed', count: 35 },
-                { name: 'Thur', count: 40 },
-                { name: 'Fri', count: 45 },
-                { name: 'Sat', count: 55 },
-                { name: 'Sun', count: 15 }
+                { name: 'Mon', count: null },
+                { name: 'Tue', count: null },
+                { name: 'Wed', count: null },
+                { name: 'Thur', count: null },
+                { name: 'Fri', count: null},
+                { name: 'Sat', count: null },
+                { name: 'Sun', count: null }
             ],
             lineData: [
-                { date: '2024-03-01', value: 10 },
-                { date: '2024-03-02', value: 15 },
-                { date: '2024-03-03', value: 20 },
-                { date: '2024-03-04', value: 18 },
-                { date: '2024-03-05', value: 25 },
-                { date: '2024-03-06', value: 10 },
-                { date: '2024-03-07', value: 15 },
-                { date: '2024-03-08', value: 20 },
-                { date: '2024-03-09', value: 18 },
-                { date: '2024-03-10', value: 25 }
+                { date: '2024-03-01', value: null },
+                { date: '2024-03-02', value: null },
+                { date: '2024-03-03', value: null },
+                { date: '2024-03-04', value: null },
+                { date: '2024-03-05', value: null },
+                { date: '2024-03-06', value: null },
+                { date: '2024-03-07', value: null },
+                { date: '2024-03-08', value: null },
+                { date: '2024-03-09', value: null },
+                { date: '2024-03-10', value: null }
             ],
+            total_head_count:'',
+             new_head_count:'',
         };
     },
+
     methods: {
+
+          countEmployeesCreatedThisMonth(employees) {
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+
+            // Filter employees whose creation month and year match the current month and year
+            const employeesCreatedThisMonth = employees.filter(employee => {
+                const creationDate = new Date(employee.created_on);
+                return  creationDate.getFullYear() === currentYear;
+            });
+
+            return employeesCreatedThisMonth.length;
+        },
+
+
+        fetchEmployees() {
+
+			const filter = {
+
+			};
+
+			this.$api
+				.getItems('employees', {
+					fields: '*.*',
+                    meta:'total_count,result_count,filter_count',
+                    limit:'500',
+					filter
+				})
+				.then(res => res.data)
+				.then(data => {
+                    console.log("Overview data")
+					console.log(data);
+
+                    this.total_head_count = data != null ? data.length : 0;
+
+let xt = this.countEmployeesCreatedThisMonth(data)
+
+this.new_head_count = xt;
+
+                    console.log(  this.total_head_count )
+				});
+		},
+
         getDayOfWeekName(dateString) {
             const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
             const date = new Date(dateString);
@@ -234,77 +279,70 @@ export default {
 
         },
     },
-    mounted() {
-        // this.circleChart();
-        this.barChart();
-        this.lineGraph();
 
-
-    },
 };
 </script>
 
 <style>
 .chart-card {
-    float: left;
-    width: 450px;
-    padding: 10px;
-    margin: 10px;
+	float: left;
+	width: 450px;
+	padding: 10px;
+	margin: 10px;
 }
 
 .bar {
-    fill: steelblue;
+	fill: steelblue;
 }
 
-
 .overview {
-    width: 100%;
-    padding: 10px;
+	width: 100%;
+	padding: 10px;
 }
 
 .overview h1 {
-    font-size: 20px;
-    letter-spacing: 0.1em;
-    margin-bottom: 10px;
-    margin-top: -60px;
-    clear: both;
-    margin-left: 10px;
+	font-size: 20px;
+	letter-spacing: 0.1em;
+	margin-bottom: 10px;
+	margin-top: -60px;
+	clear: both;
+	margin-left: 10px;
 }
 
 .number-card {
-    width: 232px;
-    height: 100px;
-    background: #eee;
-    float: left;
-    border-radius: 5px;
-    margin-left: 10px;
-    padding-top: 15px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 15px;
-    text-align: center;
-    cursor: pointer;
+	width: 232px;
+	height: 100px;
+	background: #eee;
+	float: left;
+	border-radius: 5px;
+	margin-left: 10px;
+	padding-top: 15px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 15px;
+	text-align: center;
+	cursor: pointer;
 }
 
 .number-card .title-card {
-    font-weight: 570;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+	font-weight: 570;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
 }
 
 .number-card .amount-card {
-    font-weight: bolder;
-    font-size: 30px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+	font-weight: bolder;
+	font-size: 30px;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
 }
 
 .number-card .percent-card {
-    font-weight: bolder;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: green;
+	font-weight: bolder;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: green;
 }
 </style>
