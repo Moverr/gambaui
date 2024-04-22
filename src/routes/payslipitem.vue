@@ -84,7 +84,7 @@
 
 				<div class="  drop-down">
 					<label for="">Deparment</label>
-					<select v-model="selectedDepartment" >
+					<select v-model="selectedDepartment" @change="fetchEmployees">
 						<option value="">Select Option</option>
 						<option
 							v-for="department in departments"
@@ -95,11 +95,7 @@
 						</option>
 					</select>
 				</div>
-	<div class="  drop-down">
-		 
-				<button @click="fetchEmployees" class="button button-primary" type="button" style="margin-top:20px;">search</button>
-				</div>
-<!-- 
+
 				<div class="  drop-down">
 					<label for="">Employee</label>
 					<select v-model="selectedEmployee" @change="displaySelectedEmployee">
@@ -113,7 +109,7 @@
 							{{ employee.last_name }}
 						</option>
 					</select>
-				</div> -->
+				</div>
 			</form>
 		</div>
 
@@ -139,28 +135,22 @@
 						</tr>
 					</thead>
 
-					<tbody  v-model="selectedEmployee">
-						<tr 
-							v-for="employee in employees"
-							:key="employee.id"
-							:value="employee.id"
-							>
-							 	<td>{{ employee.department.name }}</td>
-							<td>{{ employee.position }}</td>
-							<td>	{{ employee.first_name }}
-							{{ employee.last_name }}
-							</td>
-							<td> - </td>
-							<td v-model="fromDate" >{{fromDate}}</td>
-							<td v-model="toDate">{{toDate}}</td>
-							<td>	{{ employee.account_number }}</td>
-							<td>  {{ employee.bank_name }}</td>
-							<td> {{ employee.account_name }}</td>
-							<td> - </td>
-							<td> {{ employee.gross_salary }} {{ employee.currency }} </td> 
-							<td>  {{ employee.ledger[1] }}  {{ employee.currency }}    </td>
-							<td>  {{ employee.ledger[2] }}   {{ employee.currency }}   </td>
-							<td> {{  (employee.gross_salary === undefined ? 0 : employee.gross_salary ) + employee.ledger[0] }} {{ employee.currency }}   </td>
+					<tbody>
+						<tr>
+							 	<td>Deparment</td>
+							<td>Position</td>
+							<td>Name</td>
+							<td>N/M</td>
+							<td>Start</td>
+							<td>END</td>
+							<td>BANK ACCOUNT</thtd>
+							<td>BANK NAME</td>
+							<td>ACCOUNT NAME</td>
+							<td>D/N</td>
+							<td>GROSS SALARY</td>
+							<td>BONUS</td>
+							<td>DEDUCTIONS</td>
+							<td>NET SALARY</td>
 						</tr>
 					</tbody>
 
@@ -262,7 +252,7 @@ import { mapState } from 'vuex';
 import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 
 export default {
-	name: 'PayrollItem',
+	name: 'PaySlipItem',
 	mounted() {
 		this.fetchBranches();
 		this.getBeginningOfMonth();
@@ -282,71 +272,11 @@ export default {
 			earnings_and_deductions: null,
 			netAmont: null,
 			fromDate: '',
-			toDate: '',
-			ledgerDetails : undefined
-
+			toDate: ''
 		};
 	},
 
- 
-
 	methods: {
-
-
- 
-
-
-//calculate the net amounts
-calculateNetAmount(ledger) {
- 
-
-	console.log("Ledger");
-	console.log(ledger[0]);
-	
-    let totalAmount = 0;
-	let deductions = 0;
-	let additions = 0;
-
-
-	 
- 
-
- 
-
- for (let x = 0; x < ledger.length; x++) {
-    const item = ledger[x];
-    console.log("Item:", item);
-    console.log("Inner bit and else:");
-    
-    const amountDetails = item.amount_details || [];
-    console.log("Amount Details:", amountDetails);
-    
-    for (const detail of amountDetails) {
-        console.log('------------------------------------');
-        console.log('Type:', detail.payment_ledger_detail_id.type);
-        console.log('Amount:', detail.payment_ledger_detail_id.amount);
-        console.log('------------------------------------');
-
-        if (detail.payment_ledger_detail_id.type === 'increment') {
-            totalAmount += parseFloat(detail.payment_ledger_detail_id.amount);
-			additions += parseFloat(detail.payment_ledger_detail_id.amount);
-			
-        } else if (detail.payment_ledger_detail_id.type === 'decrement') {
-            totalAmount -= parseFloat(detail.payment_ledger_detail_id.amount);
-			deductions += parseFloat(detail.payment_ledger_detail_id.amount);
-        }
-    }
-}
-
-		 
-
- 
- 
-
-    console.log("Total Calculated Amount:", totalAmount);
-    return [totalAmount,additions,deductions];
-},
-
 		getBeginningOfMonth() {
 			var today = new Date();
 			var beginningOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -412,8 +342,35 @@ calculateNetAmount(ledger) {
 		printPage() {
 			window.print();
 		},
+		calculateNetAmount() {
+			//todo: map to find the reduce
+			let ledgers = this.ledgers;
 
+			const totalAmount = ledgers.reduce((acc, item) => {
+				const amountDetails = item.amount_details || [];
+				amountDetails.forEach(detail => {
+					console.log('------------------------------------ ');
+					console.log(detail.payment_ledger_detail_id.type);
+					console.log(detail.payment_ledger_detail_id.amount);
+					console.log(' ----------------------------------- ');
+					if (detail.payment_ledger_detail_id.type === 'increment') {
+						acc = eval(acc + detail.payment_ledger_detail_id.amount);
+					} else if (detail.payment_ledger_detail_id.type === 'decrement') {
+						acc = eval(acc - detail.payment_ledger_detail_id.amount);
+					}
+				});
+				return acc;
+			}, 0);
 
+			console.log('Total amount:', totalAmount);
+			console.log('Blind date');
+			console.log(ledgers);
+
+			this.earnings_and_deductions = totalAmount;
+
+			this.netAmont = eval(this.employeeDetail.gross_salary + totalAmount);
+			// this.earnings_and_deductions;
+		},
 
 		displaySelectedEmployee() {
 			let br = this.employees;
@@ -422,9 +379,6 @@ calculateNetAmount(ledger) {
 			console.log(this.employeeDetail);
 			this.fetchPaymentLedger();
 		},
-
- 
-
 		fetchPaymentLedger() {
 			console.log('Payment Ledger');
 			const filter = {
@@ -443,7 +397,7 @@ calculateNetAmount(ledger) {
 					console.log(data);
 
 					this.ledgers = data;
-				//	this.calculateNetAmount();
+					this.calculateNetAmount();
 				})
 				.catch(error => {
 					console.log('Error impl');
@@ -452,68 +406,24 @@ calculateNetAmount(ledger) {
 				});
 		},
 
-  async fetchEmployees() {
-    try {
-        console.log('Employees');
-        const filter = {
-            'department.id': { eq: this.selectedDepartment }
-        };
+		fetchEmployees() {
+			console.log('Employees');
+			const filter = {
+				'department.id': { eq: this.selectedDepartment }
+			};
 
-        const res = await this.$api.getItems('employees', {
-            fields: '*.*',
-            filter
-        });
+			this.$api
+				.getItems('employees', {
+					fields: '*.*',
+					filter
+				})
+				.then(res => res.data)
+				.then(data => {
+					console.log(data);
 
-        const data = res.data;
-        console.log(data);
-
-        let emps = "";
-        data.forEach(element => {
-            emps += element.id + ",";
-        });
-
-        console.log('Payment Ledger');
-        console.log(emps);
-        
-        const filters = {
-            'employees.id': {in: emps },
-            from_date: { gte: this.fromDate },
-            to_date: { lte: this.toDate }
-        };
-
-        const bb = await this.$api.getItems('payment_ledger', {
-            fields: '*.*,amount_details.*,amount_details.payment_ledger_detail_id.*',
-            filters
-        });
-
-		const ledgerData = bb.data;
-		
-
-
-		data.forEach(element => {
-
-		const empDetailsArray = [];
-		const empDetails = ledgerData.filter(entry => entry.employees.id === 73);
- 
-	
-	//todo: calculate the 2 and get the data
-	  console.log("..............WWWW>>>>>>>>>>>>>>>>>>>>>..");
-	 console.log(empDetails);
-		const ledgerDetails =  	this.calculateNetAmount(empDetails);
-		const totalAmount = ledgerDetails[0] != undefined ?  ledgerDetails[0]  : 0;
-		element.ledger = ledgerDetails;
-		});
-		
- 
-
-        this.employees = data;
-    } catch (error) {
-        console.error("Error fetching employees:", error);
-    }
-},
-
-
- 
+					this.employees = data;
+				});
+		},
 
 		fetchDepartments() {
 			console.log('Departments');
@@ -635,43 +545,4 @@ h1 {
 	font-weight: 700;
 	word-spacing: 1%;
 }
-
-	button {
-		display: flex;
-		align-items: center;
-		padding: 2px 4px;
-		color: var(--popover-text-color);
-		padding:10px;
-		margin-left:5px;
-		transition: color var(--fast) var(--transition);
-		background:#eee;
-
-		&.disabled {
-			color: var(--popover-text-color-disabled);
-			cursor: not-allowed;
-			i {
-				color: var(--popover-text-color-disabled);
-			}
-
-			&:hover {
-				background-color: transparent;
-				color: var(--popover-text-color-disabled);
-				i {
-					color: var(--popover-text-color-disabled);
-				}
-			}
-		}
-
-		&:hover {
-			color: var(--popover-text-color-hover);
-			transition: none;
-			i {
-				color: var(--popover-text-color-hover);
-				transition: none;
-			}
-		}
-	}
-
-
-
 </style>

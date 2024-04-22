@@ -75,14 +75,25 @@
 					 
 				/>
 
+   <v-header-button
+                v-if="addButton && !activity"
+                key="add"
+                icon="receipt"
+                icon-color="button-primary-text-color"
+                background-color="button-primary-background-color"
+                :label="$t('Create Payslip')"
+                :to="createPaySlip"
+            />
+
+
                 <v-header-button
                 v-if="addButton && !activity"
                 key="add"
-                icon="add"
+                icon="recent_actors"
                 icon-color="button-primary-text-color"
                 background-color="button-primary-background-color"
-                :label="$t('new')"
-                :to="createLink"
+                :label="$t('Create Payroll')"
+                :to="createPayroll"
             />
 
 
@@ -208,17 +219,16 @@ export default {
 			if (this.collection === 'directus_webhooks') return 'arrow_back';
 			return this.collectionInfo?.icon || 'box';
 		},
-		createLink() {
-			if (this.collection === 'directus_webhooks') {
-				return `/${this.currentProjectKey}/settings/webhooks/+`;
-			}
-
-			if (this.collection.startsWith('directus_')) {
-				return `/${this.currentProjectKey}/${this.collection.substr(9)}/+`;
-			}
-
-			return `/${this.currentProjectKey}/collections/${this.collection}/create`;
+		createPayroll() { 
+			return `/${this.currentProjectKey}/collections/payroll/create`;
 		},
+
+		createPaySlip() { 
+			return `/${this.currentProjectKey}/collections/payroll/createslip`;
+		},
+
+
+		
 		breadcrumb() {
 			if (this.collection === 'directus_users') {
 				return [
