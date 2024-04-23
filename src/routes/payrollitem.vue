@@ -1,5 +1,12 @@
 <template>
 	<div>
+
+<div v-if="showalert"  class="lightbox">
+    <h1>title</h1>
+	<span> Processing .... </span>
+  </div>
+
+	
 		<div>
 			<v-header :icon-link="`/${currentProjectKey}/collections`" />
 			<v-loader area="content" />
@@ -167,83 +174,12 @@
 
 				</table>
 
-				Moseaea
+				 
 			</div>
 		</div>
-		<div
-			v-if="employeeDetail !== '' && employeeDetail !== undefined"
-			class="inline-form "
-			style="margin-top: 10px; margin-left:40px;"
-		>
-			<label for="">
-				<h1>Name:</h1>
-				{{ employeeDetail.first_name }} {{ employeeDetail.last_name }}
-			</label>
-			<label for="">
-				<h1>Job Status:</h1>
-				{{ employeeDetail.job_status }}
-			</label>
-			<label for="">
-				<h1>Gross Amount:</h1>
-				{{ employeeDetail.gross_salary }} {{ employeeDetail.currency }}
-			</label>
+		
 
-			<div v-for="ledger in ledgers" :key="ledger.id">
-				<h1>Payment Ledger</h1>
-				From: {{ ledger.from_date }} To: {{ ledger.to_date }}
-				<h1>Details</h1>
-				<table class="table">
-					<tr>
-						<th>
-							Date
-						</th>
-						<th>
-							Amount
-						</th>
-						<th>
-							Type
-						</th>
-						<th>
-							Reason
-						</th>
-					</tr>
-
-					<tr v-for="detail in ledger.amount_details" :key="detail.id">
-						<td>
-							{{ detail.payment_ledger_detail_id.created_on }}
-						</td>
-						<td>
-							{{ detail.payment_ledger_detail_id.amount }}
-							{{ employeeDetail.currency }}
-						</td>
-						<td>{{ detail.payment_ledger_detail_id.type }}</td>
-
-						<td>{{ detail.payment_ledger_detail_id.details }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-
-		<div
-			v-if="netAmont !== null && netAmont !== undefined"
-			class="inline-form "
-			style="margin-top: 10px; margin-left:40px;"
-		>
-			<table>
-				<tr>
-					<th>Basic</th>
-					<td>{{ employeeDetail.gross_salary }} {{ employeeDetail.currency }}</td>
-				</tr>
-				<tr>
-					<th>Additions</th>
-					<td>{{ earnings_and_deductions }} {{ employeeDetail.currency }}</td>
-				</tr>
-				<tr>
-					<th>Net Amount</th>
-					<td>{{ netAmont }} {{ employeeDetail.currency }}</td>
-				</tr>
-			</table>
-		</div>
+		
 	</div>
 </template>
 
@@ -254,7 +190,6 @@ import { i18n } from '../lang/';
 import VLoader from '../components/loader.vue';
 import VError from '../components/error.vue';
 import VActivity from '../components/activity/activity.vue';
-import formatTitle from '@directus/format-title';
 import VNotFound from './not-found.vue';
 import store from '../store/';
 import api from '../api';
@@ -281,9 +216,10 @@ export default {
 			ledgers: [],
 			earnings_and_deductions: null,
 			netAmont: null,
-			fromDate: '',
-			toDate: '',
-			ledgerDetails : undefined
+			fromDate: this.getBeginningOfMonth(),
+			toDate: this.getLastDayOfMonth(),
+			ledgerDetails : undefined,
+			showalert:false
 
 		};
 	},
@@ -368,21 +304,53 @@ calculateNetAmount(ledger) {
 			return now.toISOString().slice(0, 16);
 		},
 
+
+		getCurrentDateFromString(dateString) {
+		
+		
+		const date = new Date(dateString);
+
+		// Get year, month, and day
+		const year = date.getFullYear();
+		const month = date.getMonth() + 1; // Month is zero-based, so we add 1
+		const day = date.getDate();
+
+	     const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`;
+ 
+			return formattedDate;
+		},
+
+
+//todo: fetch items from the back end and let me know if i have already paid
+
 		async savePayroll() {
-			let from = this.fromDate;
-			let to = this.toDate;
-			let earnings_and_deductions = this.earnings_and_deductions;
-			let net_salary = this.netAmont;
+			
+		 
+
+			let from = this.getCurrentDateFromString(this.fromDate);
+			let to = this.getCurrentDateFromString(this.toDate);
+
+			let employeesRecords = this.employees;
+
+			console.log(employeesRecords);
+
+			employeesRecords.forEach(record => {
+				console.log("record");
+			console.log(record);
+			
+			try {
+			let earnings_and_deductions = record.ledger[0];
+			let net_salary =    (record.gross_salary === undefined ? 0 : record.gross_salary ) + record.ledger[0]  ;
 
 			let branch = this.selectedBranch;
 
-			let currency = this.employeeDetail.currency;
+			let currency = record.currency;
 
 			let department = this.selectedDepartment;
 
-			let employee = this.selectedEmployee;
-			let status = 'draft';
-			let basic_salary = this.employeeDetail.gross_salary;
+			let empId = record.id;
+			let status = 'approved';
+			let basic_salary = record.gross_salary;
 
 			const body = {
 				basic_salary: basic_salary,
@@ -391,23 +359,27 @@ calculateNetAmount(ledger) {
 				branch: branch,
 				currency: currency,
 				department: department,
-				employee: employee,
+				employee: empId,
 				from: from,
 				to: to,
 				status: status
 			};
 
-			try {
-				await this.$api.createItem('payroll', body);
-				alert('Record Saved Succesfully');
-				//  this.$router.push('/collections');
-				this.$router.push('/hrsystem/collections/payroll');
+		
+			   this.$api.createItem('payroll', body);
+				 
+
+			
+
 			} catch (error) {
-				this.error = error;
-				console.error(error);
-				this.$router.push('/hrsystem/collections/payroll/create');
-			} finally {
+				 console.log(error)
+			} 
+			finally{
+				//this.$router.push('/hrsystem/collections/payroll');
 			}
+
+			});
+
 		},
 		printPage() {
 			window.print();
@@ -454,6 +426,7 @@ calculateNetAmount(ledger) {
 
   async fetchEmployees() {
     try {
+		this.showalert = true;
         console.log('Employees');
         const filter = {
             'department.id': { eq: this.selectedDepartment }
@@ -507,15 +480,21 @@ calculateNetAmount(ledger) {
  
 
         this.employees = data;
+		
     } catch (error) {
         console.error("Error fetching employees:", error);
     }
+	finally{
+		this.showalert = false;
+	}
 },
 
 
  
 
 		fetchDepartments() {
+
+			this.showalert = true;
 			console.log('Departments');
 
 			this.selectedEmployee = '';
@@ -539,12 +518,14 @@ calculateNetAmount(ledger) {
 					console.log(data);
 
 					this.departments = data;
+					this.showalert = false;
 				});
 		},
 
 		fetchBranches() {
 			console.log('Branches');
 			console.log(this.$api);
+			this.showalert = true;
 			this.$api
 				.getItems('branches', {
 					fields: '*.*'
@@ -554,6 +535,7 @@ calculateNetAmount(ledger) {
 					console.log(data);
 
 					this.branches = data;
+					this.showalert = false;
 				});
 		}
 	}
@@ -671,6 +653,26 @@ h1 {
 			}
 		}
 	}
+
+
+
+
+
+.lightbox{
+	position:fixed; 
+	background:#eee;
+	 
+
+
+    margin: auto;
+    margin-left: 10%;
+    width: 700px;
+    height: 100px;
+
+	    border: 2px solid;
+		font-size:16px;
+		padding:20px;
+}
 
 
 
