@@ -70,7 +70,7 @@
 					icon="print"
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
-					:label="Print"
+				  :label="$t('  Print')"
                     @click="printPage"
 					 
 				/>
@@ -81,7 +81,7 @@
                 icon="receipt"
                 icon-color="button-primary-text-color"
                 background-color="button-primary-background-color"
-                :label="$t('Create Payslip')"
+                :label="$t('  Payslip')"
                 :to="createPaySlip"
             />
 
@@ -92,7 +92,7 @@
                 icon="recent_actors"
                 icon-color="button-primary-text-color"
                 background-color="button-primary-background-color"
-                :label="$t('Create Payroll')"
+                :label="$t('  Payroll')"
                 :to="createPayroll"
             />
 

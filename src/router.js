@@ -14,6 +14,8 @@ import Item from './routes/item.vue';
 import Login from './routes/login.vue';
 import PayrollItems from './routes/payrollitems.vue';
 import PayrollItem from './routes/payrollitem.vue';
+import PaySlipItem from './routes/payslipitem.vue';
+
 
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
 const ResetPassword = () =>
@@ -83,6 +85,13 @@ const router = new Router({
 			component: PayrollItem
 		},
 
+		{
+			path: '/:project/collections/payroll/createslip',
+			props: true,
+			component: PaySlipItem
+		},
+
+		
 		{
 			path: '/:project/collections/:collection',
 			props: true,

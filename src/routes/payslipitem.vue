@@ -30,7 +30,7 @@
 					@click="printPage"
 				/>
 
-				<v-header-button
+				<!-- <v-header-button
 					:loading="saving"
 					:label="$t('save')"
 					:options="saveOptions"
@@ -40,7 +40,7 @@
 					hover-color="button-primary-background-color-hover"
 					@click="savePayroll"
 					@input="save"
-				/>
+				/> -->
 			</template>
 		</v-header>
 
@@ -113,53 +113,7 @@
 			</form>
 		</div>
 
-		<div>
-			<div class=" " style="margin-top: 10px; margin-left:50px;">
-				<table>
-					<thead>
-						<tr>
-							 <th>Deparment</th>
-							<th>Position</th>
-							<th>Name</th>
-							<th>N/M</th>
-							<th>Start</th>
-							<th>END</th>
-							<th>BANK ACCOUNT</th>
-							<th>BANK NAME</th>
-							<th>ACCOUNT NAME</th>
-							<th>D/N</th>
-							<th>GROSS SALARY</th>
-							<th>BONUS</th>
-							<th>DEDUCTIONS</th>
-							<th>NET SALARY</th>
-						</tr>
-					</thead>
-
-					<tbody>
-						<tr>
-							 	<td>Deparment</td>
-							<td>Position</td>
-							<td>Name</td>
-							<td>N/M</td>
-							<td>Start</td>
-							<td>END</td>
-							<td>BANK ACCOUNT</thtd>
-							<td>BANK NAME</td>
-							<td>ACCOUNT NAME</td>
-							<td>D/N</td>
-							<td>GROSS SALARY</td>
-							<td>BONUS</td>
-							<td>DEDUCTIONS</td>
-							<td>NET SALARY</td>
-						</tr>
-					</tbody>
-
-
-				</table>
-
-				Moseaea
-			</div>
-		</div>
+	 
 		<div
 			v-if="employeeDetail !== '' && employeeDetail !== undefined"
 			class="inline-form "
