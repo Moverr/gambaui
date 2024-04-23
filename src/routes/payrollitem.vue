@@ -321,7 +321,43 @@ calculateNetAmount(ledger) {
 		},
 
 
+
 //todo: fetch items from the back end and let me know if i have already paid
+
+async getPayrolls(){
+
+	
+	let from = this.getCurrentDateFromString(this.fromDate);
+	let to = this.getCurrentDateFromString(this.toDate);
+
+
+	let employeesRecords = this.employees;
+
+        let emps = "";
+        employeesRecords.forEach(element => {
+            emps += element.id + ",";
+        });
+
+        console.log('Payroll existing already ');
+        console.log(emps);
+        
+        const filters = {
+            'employee.id': {in: emps },
+			'status': {eq: 'approved' },
+            from: { gte: from },
+            to: { lte: to }
+        };
+
+        const bb = await this.$api.getItems('payroll', {
+            fields: '*.*,employee.*',
+            filters
+        });
+
+		const ledgerData = bb.data;
+
+
+
+},
 
 		async savePayroll() {
 			
@@ -332,10 +368,13 @@ calculateNetAmount(ledger) {
 
 			let employeesRecords = this.employees;
 
+			//todo: filter all records from the pay ledger
+
 			console.log(employeesRecords);
 
-			employeesRecords.forEach(record => {
-				console.log("record");
+			for (record  in employeesRecords) {
+			
+			console.log("record");
 			console.log(record);
 			
 			try {
@@ -366,7 +405,7 @@ calculateNetAmount(ledger) {
 			};
 
 		
-			   this.$api.createItem('payroll', body);
+		//	const bd = await   this.$api.createItem('payroll', body);
 				 
 
 			
@@ -378,7 +417,7 @@ calculateNetAmount(ledger) {
 				//this.$router.push('/hrsystem/collections/payroll');
 			}
 
-			});
+			};
 
 		},
 		printPage() {
