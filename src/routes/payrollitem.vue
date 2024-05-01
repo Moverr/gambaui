@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div v-if="showalert" class="lightbox">
-			<h1>title</h1>
-			<span>Processing ....</span>
+			<h1>{{ msgTitle }}</h1>
+			<span>{{ msgDetail }}</span>
 		</div>
 
 		<div>
@@ -109,9 +109,10 @@
 						type="button"
 						style="margin-top:20px;"
 					>
-						search
+						Search
 					</button>
 				</div>
+			 
 				<!-- 
 				<div class="  drop-down">
 					<label for="">Employee</label>
@@ -135,6 +136,10 @@
 				<table>
 					<thead>
 						<tr>
+							<th>
+								 .
+							</th>
+
 							<th>Deparment</th>
 							<th>Position</th>
 							<th>Name</th>
@@ -159,6 +164,10 @@
 							:value="employee.id"
 							:class="{ 'already-paid': alreadyPaid(employee) }"
 						>
+							<td>
+								 
+								<button  	@click="removeItem(employee.id)" >Remove </button>
+							</td>
 							<td>{{ employee.department.name }}</td>
 							<td>{{ employee.position }}</td>
 							<td>
@@ -212,6 +221,24 @@ export default {
 		this.getLastDayOfMonth();
 	},
 
+	computed: {
+		isSelected: {
+			get() {
+				return this.selectedEmployee.includes('employeeId');
+			},
+			set(newValue) {
+				if (newValue) {
+					this.selectedEmployee.push('employeeId');
+				} else {
+					const index = this.selectedEmployee.indexOf('employeeId');
+					if (index !== -1) {
+						this.selectedEmployee.splice(index, 1);
+					}
+				}
+			}
+		}
+	},
+
 	data() {
 		return {
 			selectedBranch: '',
@@ -228,11 +255,23 @@ export default {
 			toDate: '',
 			ledgerDetails: undefined,
 			showalert: false,
-			alreadyapprovedemps: null
+			alreadyapprovedemps: null,
+			msgTitle: '',
+			msgDetail: '',
+			allSelected: false,
+			selectedEmployee: []
 		};
 	},
 
 	methods: {
+		removeItem(id){
+
+			const index = this.employees.findIndex(employee => employee.id === id);
+				if (index !== -1) {
+					this.employees.splice(index, 1);
+				}
+
+		}, 
 		alreadyPaid(employee) {
 			// Check if the person exists in alreadyapprovedemps
 			console.log('Already paid ');
@@ -365,6 +404,8 @@ export default {
 
 		async savePayroll() {
 			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
 
 			let from = this.getCurrentDateFromString(this.fromDate);
 			let to = this.getCurrentDateFromString(this.toDate);
@@ -472,6 +513,9 @@ export default {
 			try {
 				this.alreadyapprovedemps = null;
 				this.showalert = true;
+				this.msgTitle = 'Information';
+				this.msgDetail = 'Processing';
+
 				console.log('Employees');
 				const filter = {
 					'department.id': { eq: this.selectedDepartment }
@@ -508,7 +552,10 @@ export default {
 
 				data.forEach(element => {
 					const empDetailsArray = [];
-					const empDetails = ledgerData.filter(entry => entry.employees.id === element.id);
+
+					const empDetails = ledgerData.filter(entry => {
+						return entry.employees != null && entry.employees.id === element.id;
+					});
 
 					//todo: calculate the 2 and get the data
 					console.log('..............WWWW>>>>>>>>>>>>>>>>>>>>>..');
@@ -530,6 +577,9 @@ export default {
 
 		fetchDepartments() {
 			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
+
 			console.log('Departments');
 
 			this.selectedEmployee = '';
@@ -561,6 +611,9 @@ export default {
 			console.log('Branches');
 			console.log(this.$api);
 			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
+
 			this.$api
 				.getItems('branches', {
 					fields: '*.*'
@@ -710,5 +763,11 @@ button {
 
 .already-paid :nth-child(even) {
 	background: #f08080;
+}
+
+.checkbox {
+	height: 20px;
+	width: 20px;
+	cursor: pointer;
 }
 </style>
