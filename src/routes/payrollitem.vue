@@ -419,10 +419,10 @@ export default {
 			console.log(employeesRecords);
 
 			for (const record of employeesRecords) {
-				console.log('..........bigotet............');
+				console.log('..........save payroll............');
 				console.log(record);
 				if (this.alreadyPaid(record) === false) {
-					console.log('Item Does not Exist  ');
+					console.log(' find if payment already approved  ');
 
 					console.log('record');
 					console.log(record);
