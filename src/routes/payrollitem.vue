@@ -361,7 +361,7 @@ export default {
 
 		//todo: fetch items from the back end and let me know if i have already paid
 
-		async getPayrolls() {
+		async getPaySlips() {
 			let from = this.fromDate;
 			let to = this.toDate;
 
@@ -386,7 +386,7 @@ export default {
 				to: { lt: to }
 			};
 
-			const bb = await this.$api.getItems('payroll', {
+			const bb = await this.$api.getItems('payslip', {
 				fields: '*.*,employee.*',
 				filters
 			});
@@ -419,7 +419,7 @@ export default {
 			console.log(employeesRecords);
 
 			for (const record of employeesRecords) {
-				console.log('..........save payroll............');
+				console.log('..........save payslip............');
 				console.log(record);
 				if (this.alreadyPaid(record) === false) {
 					console.log(' find if payment already approved  ');
@@ -456,8 +456,10 @@ export default {
 							status: status
 						};
 
-						const bd = await this.$api.createItem('payroll', body);
+						const bd = await this.$api.createItem('payslip', body);
 
+						console.log("...................................Congo");
+						console.log(bd);
 						console.log('paid');
 					} catch (error) {
 						console.log(error);
@@ -468,7 +470,8 @@ export default {
 			}
 			this.showalert = false;
 
-			this.$router.push('/hrsystem/collections/payroll');
+//todo: some missing information 
+			this.$router.push('/hrsystem/collections/payrolls');
 		},
 		printPage() {
 			window.print();
@@ -567,7 +570,7 @@ export default {
 
 				this.employees = data;
 
-				this.getPayrolls();
+				this.getPaySlips();
 			} catch (error) {
 				console.error('Error fetching employees:', error);
 			} finally {
