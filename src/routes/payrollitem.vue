@@ -166,7 +166,15 @@
 						>
 							<td>
 								 
-								<button  	@click="removeItem(employee.id)" >Remove </button>
+
+								<template v-if="alreadyPaid(employee)">
+								 <div style="color:green; font-weight:bold;">	approved  </div>
+								</template>
+								<template v-else>
+									<button @click="removeItem(employee.id)">Remove</button>
+								</template>
+
+
 							</td>
 							<td>{{ employee.department.name }}</td>
 							<td>{{ employee.position }}</td>
@@ -551,10 +559,20 @@ export default {
 				this.msgTitle = 'Information';
 				this.msgDetail = 'Processing';
 
+				let branch = this.selectedBranch;
+				let department = this.selectedDepartment;
+
+				if(this.branch === '') return;
+
 				console.log('Employees');
-				const filter = {
-					'department.id': { eq: this.selectedDepartment }
-				};
+				const filter = 	(this.department !== undefined )?
+				{
+					'department.id': { eq: department }
+				}:
+				{
+					
+					'department.branch.id': { eq: branch }
+				}
 
 				const res = await this.$api.getItems('employees', {
 					fields: '*.*',
