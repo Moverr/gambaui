@@ -132,8 +132,8 @@
 		</div>
 
 		<div>
-			<div class=" " style="margin-top: 10px; margin-left:50px;">
-				<table>
+			<div class="tabular-data" style="margin-top: 10px; margin-left:50px;">
+				<table  border="0">
 					<thead>
 						<tr>
 							<th>
@@ -376,7 +376,7 @@ export default {
 				emps += element.id + ',';
 			});
 
-			console.log('Payroll existing already ');
+			console.log('Payslip existing already ');
 			console.log(emps);
 
 			const filters = {
@@ -417,6 +417,9 @@ export default {
 			//todo: filter all records from the pay ledger
 
 			console.log(employeesRecords);
+
+//initialize the payslips array ::
+			let payslips = [];
 
 			for (const record of employeesRecords) {
 				console.log('..........save payslip............');
@@ -460,6 +463,7 @@ export default {
 
 						console.log("...................................Congo");
 						console.log(bd);
+						payslips.push(bd);
 						console.log('paid');
 					} catch (error) {
 						console.log(error);
@@ -468,6 +472,34 @@ export default {
 					}
 				}
 			}
+
+			console.log("Pay slips");
+			console.log(payslips);
+
+
+			//todo: send data for payroll..
+			if(payslips.length > 0 ){
+					//todo: add payslips to the addition
+ 
+				let paylipObject = [];
+
+				for (let i = 0; i < payslips.length; i++) {
+					let payslipId = payslips[1].id;  
+					let payslip = { payslip_id: { id: payslipId } };
+					paylipObject.push(payslip);
+				}
+
+				const requestBody = {
+				status: "draft",
+				from: from,
+				to: to,
+				payslips: paylipObject
+				};
+
+				const bd = await this.$api.createItem('payrolls', requestBody);
+
+			}
+
 			this.showalert = false;
 
 //todo: some missing information 
@@ -760,17 +792,26 @@ button {
 	padding: 20px;
 }
 
-.already-paid :nth-child(odd) {
-	background: #ff5733;
-}
-
-.already-paid :nth-child(even) {
-	background: #f08080;
-}
+ 
 
 .checkbox {
 	height: 20px;
 	width: 20px;
 	cursor: pointer;
 }
+.tabular-data th{
+	background:#eee; font-size:12px;
+}
+
+.tabular-data td{
+	 font-size:12px; background: #fff;
+}
+.tabular-data table {
+	border:0px;
+	    background: antiquewhite;
+		border-radius:10px 10px 0px 0px;
+		border-top:1px solid #eee;
+}
+ 
+
 </style>
