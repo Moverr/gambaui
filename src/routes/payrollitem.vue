@@ -50,31 +50,35 @@
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-			<form action="" method="post">
-				<div class="  drop-down">
-					<label for="">From</label>
-					<input
-						class="datetime"
-						type="date"
-						name="from_date"
-						id="start_date"
-						v-model="fromDate"
-					/>
-					<p style="margin-left:10px;">{{ fromDate }}</p>
-				</div>
-				&nbsp;
-				<div class="  drop-down">
-					<label for="">To</label>
-					<input
-						v-model="toDate"
-						class="datetime"
-						type="date"
-						name="to_date"
-						id="to_date"
-					/>
-					<p style="margin-left:10px;">{{ toDate }}</p>
-				</div>
-			</form>
+			<div class="  drop-down">
+				<label for="">Pay Month</label>
+				<input
+					class="datetime"
+					type="month"
+					name="month"
+					id="month"
+					v-model="selectedMonth"
+					@change="calculateMonthBounds"
+				/>
+
+				<p style="margin-left:10px;">{{ selectedMonth }}</p>
+			</div>
+			&nbsp;
+			<div
+				class=" display_window "
+				style="
+				display: block;
+			 
+				float: left;
+				margin: 10px;
+				margin-top: 15px;
+				font-size: 20px;
+				font-weight: 400;
+	"
+			>
+				<div>From : {{ fromDate }}</div>
+				<div>To : {{ toDate }}</div>
+			</div>
 		</div>
 		<br />
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
@@ -112,7 +116,7 @@
 						Search
 					</button>
 				</div>
-			 
+
 				<!-- 
 				<div class="  drop-down">
 					<label for="">Employee</label>
@@ -133,11 +137,11 @@
 
 		<div>
 			<div class="tabular-data" style="margin-top: 10px; margin-left:50px;">
-				<table  border="0">
+				<table border="0">
 					<thead>
 						<tr>
 							<th>
-								 .
+								.
 							</th>
 
 							<th>Deparment</th>
@@ -165,16 +169,12 @@
 							:class="{ 'already-paid': alreadyPaid(employee) }"
 						>
 							<td>
-								 
-
 								<template v-if="alreadyPaid(employee)">
-								 <div style="color:green; font-weight:bold;">	approved  </div>
+									<div style="color:green; font-weight:bold;">approved</div>
 								</template>
 								<template v-else>
 									<button @click="removeItem(employee.id)">Remove</button>
 								</template>
-
-
 							</td>
 							<td>{{ employee.department.name }}</td>
 							<td>{{ employee.position }}</td>
@@ -227,6 +227,7 @@ export default {
 		this.fetchBranches();
 		this.getBeginningOfMonth();
 		this.getLastDayOfMonth();
+		this.getCurrentMonth();
 	},
 
 	computed: {
@@ -261,6 +262,7 @@ export default {
 			netAmont: null,
 			fromDate: '',
 			toDate: '',
+			selectedMonth: '',
 			ledgerDetails: undefined,
 			showalert: false,
 			alreadyapprovedemps: null,
@@ -272,14 +274,27 @@ export default {
 	},
 
 	methods: {
-		removeItem(id){
+		calculateMonthBounds() {
+			if (!this.selectedMonth) return;
+			const [year, month] = this.selectedMonth.split('-');
+			const startDate = new Date(year, month - 1, 1);
+			const endDate = new Date(year, month, 0); // Last day of selected month
 
+			// Format the dates as needed
+			const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+			this.fromDate = this.getCurrentDateFromString(
+				startDate.toLocaleDateString('en-US', options)
+			);
+			this.toDate = this.getCurrentDateFromString(
+				endDate.toLocaleDateString('en-US', options)
+			);
+		},
+		removeItem(id) {
 			const index = this.employees.findIndex(employee => employee.id === id);
-				if (index !== -1) {
-					this.employees.splice(index, 1);
-				}
-
-		}, 
+			if (index !== -1) {
+				this.employees.splice(index, 1);
+			}
+		},
 		alreadyPaid(employee) {
 			// Check if the person exists in alreadyapprovedemps
 			console.log('Already paid ');
@@ -331,6 +346,12 @@ export default {
 			return [totalAmount, additions, deductions];
 		},
 
+		getCurrentMonth() {
+			var today = new Date();
+			const year = today.getFullYear();
+			const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+			this.selectedMonth = `${year}-${month}`;
+		},
 		getBeginningOfMonth() {
 			var today = new Date();
 			var beginningOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -426,7 +447,7 @@ export default {
 
 			console.log(employeesRecords);
 
-//initialize the payslips array ::
+			//initialize the payslips array ::
 			let payslips = [];
 
 			for (const record of employeesRecords) {
@@ -469,7 +490,7 @@ export default {
 
 						const bd = await this.$api.createItem('payslip', body);
 
-						console.log("...................................Congo");
+						console.log('...................................Congo');
 						console.log(bd);
 						payslips.push(bd);
 						console.log('paid');
@@ -481,36 +502,34 @@ export default {
 				}
 			}
 
-			console.log("Pay slips");
+			console.log('Pay slips');
 			console.log(payslips);
 
-
 			//todo: send data for payroll..
-			if(payslips.length > 0 ){
-					//todo: add payslips to the addition
- 
+			if (payslips.length > 0) {
+				//todo: add payslips to the addition
+
 				let paylipObject = [];
 
 				for (let i = 0; i < payslips.length; i++) {
-					let payslipId = payslips[1].id;  
+					let payslipId = payslips[1].id;
 					let payslip = { payslip_id: { id: payslipId } };
 					paylipObject.push(payslip);
 				}
 
 				const requestBody = {
-				status: "draft",
-				from: from,
-				to: to,
-				payslips: paylipObject
+					status: 'draft',
+					from: from,
+					to: to,
+					payslips: paylipObject
 				};
 
 				const bd = await this.$api.createItem('payrolls', requestBody);
-
 			}
 
 			this.showalert = false;
 
-//todo: some missing information 
+			//todo: some missing information
 			this.$router.push('/hrsystem/collections/payrolls');
 		},
 		printPage() {
@@ -562,26 +581,25 @@ export default {
 				let branch = this.selectedBranch;
 				let department = this.selectedDepartment;
 
-				if(branch === '') return;
+				if (branch === '') return;
 
 				console.log('Employees');
 
-				let filter ;
-				if(department !== ''  && department !== undefined  ){
+				let filter;
+				if (department !== '' && department !== undefined) {
 					filter = {
-					'department.id': { eq: department }
-				};
-
-				}else{
-					filter = 	{
-					
-					'department.branch.id': { eq: branch }
+						'department.id': { eq: department },
+						'start_date': { lt: this.fromDate },
+						status: { eq: 'active' }
+					};
+				} else {
+					filter = {
+						'department.branch.id': { eq: branch },
+						'start_date': { lt: this.fromDate },
+						status: { eq: 'active' }
+					};
 				}
 
-
-				}
-				 
-			
 				const res = await this.$api.getItems('employees', {
 					fields: '*.*',
 					filter
@@ -813,31 +831,30 @@ button {
 	width: 700px;
 	height: 100px;
 
-	border: 2px solid;
+	border: 1px solid;
+	border-radius:5px;
 	font-size: 16px;
 	padding: 20px;
 }
-
- 
 
 .checkbox {
 	height: 20px;
 	width: 20px;
 	cursor: pointer;
 }
-.tabular-data th{
-	background:#eee; font-size:12px;
+.tabular-data th {
+	background: #eee;
+	font-size: 12px;
 }
 
-.tabular-data td{
-	 font-size:12px; background: #fff;
+.tabular-data td {
+	font-size: 12px;
+	background: #fff;
 }
 .tabular-data table {
-	border:0px;
-	    background: antiquewhite;
-		border-radius:10px 10px 0px 0px;
-		border-top:1px solid #eee;
+	border: 0px;
+	background: antiquewhite;
+	border-radius: 10px 10px 0px 0px;
+	border-top: 1px solid #eee;
 }
- 
-
 </style>
