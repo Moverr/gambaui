@@ -559,21 +559,28 @@ export default {
 				this.msgTitle = 'Information';
 				this.msgDetail = 'Processing';
 
-				let branch = this.selectedBranch;
-				let department = this.selectedDepartment;
+				let branch = this.selectedBranch === undefined? this.selectedBranch.trim(): null;
+				let department = this.selectedDepartment === undefined? this.selectedDepartment.trim(): null;
 
-				if(this.branch === '') return;
+			 
 
 				console.log('Employees');
-				const filter = 	(this.department !== undefined )?
-				{
-					'department.id': { eq: department }
-				}:
-				{
-					
-					'department.branch.id': { eq: branch }
-				}
 
+				let filter ={}
+				if(department !== ""  || department !== null  ){
+					filter = { 
+						'department.id': { eq: department }
+				
+						 };
+
+				}else if(branch !== ""  || branch !== undefined  ){
+					filter = 	{ 'department.branch.id': { eq: branch } };
+				}
+				else{
+					 
+				}
+				 
+			
 				const res = await this.$api.getItems('employees', {
 					fields: '*.*',
 					filter
