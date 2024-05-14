@@ -559,25 +559,26 @@ export default {
 				this.msgTitle = 'Information';
 				this.msgDetail = 'Processing';
 
-				let branch = this.selectedBranch === undefined? this.selectedBranch.trim(): null;
-				let department = this.selectedDepartment === undefined? this.selectedDepartment.trim(): null;
+				let branch = this.selectedBranch;
+				let department = this.selectedDepartment;
 
-			 
+				if(branch === '') return;
 
 				console.log('Employees');
 
-				let filter ={}
-				if(department !== ""  || department !== null  ){
-					filter = { 
-						'department.id': { eq: department }
-				
-						 };
+				let filter ;
+				if(department !== ''  && department !== undefined  ){
+					filter = {
+					'department.id': { eq: department }
+				};
 
-				}else if(branch !== ""  || branch !== undefined  ){
-					filter = 	{ 'department.branch.id': { eq: branch } };
+				}else{
+					filter = 	{
+					
+					'department.branch.id': { eq: branch }
 				}
-				else{
-					 
+
+
 				}
 				 
 			
