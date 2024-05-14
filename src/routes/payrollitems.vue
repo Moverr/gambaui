@@ -220,11 +220,11 @@ export default {
 			return this.collectionInfo?.icon || 'box';
 		},
 		createPayroll() { 
-			return `/${this.currentProjectKey}/collections/payroll/create`;
+			return `/${this.currentProjectKey}/collections/payrolls/create`;
 		},
 
 		createPaySlip() { 
-			return `/${this.currentProjectKey}/collections/payroll/createslip`;
+			return `/${this.currentProjectKey}/collections/payrolls/createslip`;
 		},
 
 
@@ -713,7 +713,7 @@ export default {
         console.log("Plain and simple");
         console.log(to);
         console.log(to.params);
-        to.params.collection = 'payroll'
+        to.params.collection = 'payrolls'
 		let { collection } = to.params;
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
@@ -750,7 +750,7 @@ export default {
 			});
 	},
     beforeRouteUpdate(to, from, next) {
-        to.params.collection = 'payroll'
+        to.params.collection = 'payrolls'
 		const { collection } = to.params;
 
 		this.preferences = null;

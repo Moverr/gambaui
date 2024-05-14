@@ -75,21 +75,31 @@ const router = new Router({
 			component: Collections
 		},
 		{
-			path: '/:project/collections/payroll',
+			path: '/:project/collections/payrolls',
 			props: true,
 			component: PayrollItems
 		},
 		{
-			path: '/:project/collections/payroll/create',
+			path: '/:project/collections/payrolls/create',
 			props: true,
 			component: PayrollItem
 		},
 
 		{
-			path: '/:project/collections/payroll/createslip',
+			path: '/:project/collections/payrolls/createslip',
 			props: true,
 			component: PaySlipItem
 		},
+
+		{
+			path: '/:project/collections/payrolls/:primaryKey',
+			props: true,
+			component: PayrollItem,
+			meta: {
+				infoSidebarWidth: 'wide'
+			}
+		},
+		
 
 		
 		{
@@ -97,6 +107,8 @@ const router = new Router({
 			props: true,
 			component: Items
 		},
+		
+
 		{
 			path: '/:project/collections/:collection/:primaryKey',
 			props: true,
