@@ -35,7 +35,7 @@
 					@click="printPage"
 				/>
 
-				<v-header-button
+				<!-- <v-header-button
 					v-if="isPending"
 					:loading="saving"
 					:label="$t('save')"
@@ -46,36 +46,40 @@
 					hover-color="button-primary-background-color-hover"
 					@click="savePayroll"
 					@input="save"
-				/>
+				/> -->
 			</template>
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-			<form action="" method="post">
-				<div class="  drop-down">
-					<label for="">From</label>
-					<input
-						class="datetime"
-						type="date"
-						name="from_date"
-						id="start_date"
-						v-model="fromDate"
-					/>
-					<p style="margin-left:10px;">{{ fromDate }}</p>
-				</div>
-				&nbsp;
-				<div class="  drop-down">
-					<label for="">To</label>
-					<input
-						v-model="toDate"
-						class="datetime"
-						type="date"
-						name="to_date"
-						id="to_date"
-					/>
-					<p style="margin-left:10px;">{{ toDate }}</p>
-				</div>
-			</form>
+			<div class="  drop-down">
+				<label for="">Pay Month</label>
+				<input
+					class="datetime"
+					type="month"
+					name="month"
+					id="month"
+					v-model="selectedMonth"
+					@change="calculateMonthBounds"
+				/>
+
+				<p style="margin-left:10px;">{{ selectedMonth }}</p>
+			</div>
+			&nbsp;
+			<div
+				class=" display_window "
+				style="
+				display: block;
+			 
+				float: left;
+				margin: 10px;
+				margin-top: 15px;
+				font-size: 20px;
+				font-weight: 400;
+	"
+			>
+				<div>From : {{ fromDate }}</div>
+				<div>To : {{ toDate }}</div>
+			</div>
 		</div>
 		<br />
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
@@ -223,6 +227,7 @@ export default {
 		this.fetchBranches();
 		this.getBeginningOfMonth();
 		this.getLastDayOfMonth();
+		this.getCurrentMonth();
 	},
 
 	data() {
@@ -254,6 +259,45 @@ export default {
 	},
 
 	methods: {
+getCurrentMonth() {
+			var today = new Date();
+			const year = today.getFullYear();
+			const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+			this.selectedMonth = `${year}-${month}`;
+		},
+		calculateMonthBounds() {
+			if (!this.selectedMonth) return;
+			const [year, month] = this.selectedMonth.split('-');
+			const startDate = new Date(year, month - 1, 1);
+			const endDate = new Date(year, month, 0); // Last day of selected month
+
+			// Format the dates as needed
+			const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+			this.fromDate = this.getCurrentDateFromString(
+				startDate.toLocaleDateString('en-US', options)
+			);
+			this.toDate = this.getCurrentDateFromString(
+				endDate.toLocaleDateString('en-US', options)
+			);
+		},
+
+		getCurrentDateFromString(dateString) {
+			const date = new Date(dateString);
+
+			// Get year, month, and day
+			const year = date.getFullYear();
+			const month = date.getMonth() + 1; // Month is zero-based, so we add 1
+			const day = date.getDate();
+
+			const formattedDate = `${year}-${month < 10 ? '0' : ''}${month}-${
+				day < 10 ? '0' : ''
+			}${day}`;
+
+			return formattedDate;
+		},
+
+
+		
 		alreadyPaid(employee) {
 			// Check if the person exists in alreadyapprovedemps
 			console.log('Already paid ');
@@ -268,7 +312,7 @@ export default {
 			return this.alreadyapprovedemps.some(item => item.employee.id === employee.id);
 		},
 
-		async getPayrolls() {
+		async getPaySlips() {
 			this.showalert = true;
 			this.msgTitle = 'Information';
 			this.msgDetail = 'Fetching Payrolls';
@@ -297,7 +341,7 @@ export default {
 				to: { lt: to }
 			};
 
-			const bb = await this.$api.getItems('payroll', {
+			const bb = await this.$api.getItems('payslip', {
 				fields: '*.*,employee.*',
 				filters
 			});
@@ -469,11 +513,11 @@ export default {
 				this.employees = dataR.data;
 
 				console.log('belong to the new era ');
-				this.getPayrolls();
+				this.getPaySlips();
 				this.showalert = false;
 			} catch (error) {}
 
-			//getPayrolls
+			//getPaySlips
 		},
 
 		fetchDepartments() {

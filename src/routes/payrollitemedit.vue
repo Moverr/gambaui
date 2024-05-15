@@ -210,7 +210,8 @@ export default {
 			payroll: '',
 			branchname:'',
 			selectedStatus:'',
-				showalert: false
+			showalert: false,
+			selectedMonth: '',
 		};
 	},
 
