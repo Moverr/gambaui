@@ -16,6 +16,8 @@ import PayrollItems from './routes/payrollitems.vue';
 import PayrollItem from './routes/payrollitem.vue';
 import PayrollItemEdit from './routes/payrollitemedit.vue';
 import PaySlipItem from './routes/payslipitem.vue';
+import PaySlipItems from './routes/payslipitems.vue';
+import PaySlipItemEdit from './routes/payslipitemedit.vue';
 
 
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
@@ -80,6 +82,23 @@ const router = new Router({
 			props: true,
 			component: PayrollItems
 		},
+
+		{
+			path: '/:project/collections/payslip',
+			props: true,
+			component: PaySlipItems
+		},
+
+
+		{
+			path: '/:project/collections/payslip/:primaryKey',
+			props: true,
+			component: PaySlipItemEdit,
+			meta: {
+				infoSidebarWidth: 'wide'
+			}
+		},
+
 		{
 			path: '/:project/collections/payrolls/create',
 			props: true,
@@ -101,7 +120,7 @@ const router = new Router({
 			}
 		},
 
-
+		
 		
 		{
 			path: '/:project/collections/:collection',
