@@ -661,7 +661,8 @@ h1 {
 	width: 700px;
 	height: 100px;
 
-	border: 2px solid;
+	border: 1px solid;
+	border-radius: 5px;
 	font-size: 16px;
 	padding: 20px;
 }

@@ -50,27 +50,23 @@
 			</template>
 		</v-header>
 
-		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
+		<div class="inline-form " style="margin-top: 10px; margin-left:30px;">
 			<form action="" method="post">
-				<div class="  drop-down">
+				<div class="  drop-down"> 
+					<p style="margin-left:10px;font-weight:bold;">From : {{ payslipData.from }}</p>
 				 
-					 
-					<p style="margin-left:10px;">From : {{ fromDate }}</p>
-				</div>
-				&nbsp;
-				<div class="  drop-down">
-					 	<p style="margin-left:10px;">To : {{ toDate }}</p>
+					 	<p style="margin-left:10px;font-weight:bold;">To : {{ payslipData.to }}</p>
 				</div>
 			</form>
 		</div>
 		<br />
-		<div  v-if="payslipData !== '' && payslipData !== undefined" class="inline-form " style="margin-top: 10px; margin-left:40px;">
+		<div  v-if="payslipData !== '' && payslipData !== undefined" class="inline-form " style="margin-top: 10px; margin-left:30px;">
 			<form action="" method="post">
 				<div class="  drop-down">
-				 <strong>Branch :</strong> {{payslipData.branch.name}} 
+				 <strong style="font-weight:bold; margin-left:10px;">Branch :</strong> {{payslipData.branch.name}} 
 					  &nbsp; &nbsp; &nbsp;
 			 
-				  <strong> Deparment :</strong>   {{payslipData.department.name}}  
+				  <strong style="font-weight:bold;"> Deparment :</strong>   {{payslipData.department.name}}  
 					 
 				</div>
 
@@ -143,7 +139,7 @@
 					<td>{{  payslipData.gross_salary }} {{  payslipData.currency }}</td>
 				</tr>
 				<tr>
-					<th>Additions</th>
+					<th>Additions and Deductions</th>
 					<td>{{  payslipData.earnings_and_deductions }} {{  payslipData.currency }}</td>
 				</tr>
 				<tr>
@@ -153,7 +149,7 @@
 
 				<tr>
 					<th>Payment Status</th>
-					<td>{{ paymentstatus }} {{ approvedDate }}</td>
+					<td>{{ payslipData.status }}  </td>
 				</tr>
 			</table>
 		</div>
@@ -300,7 +296,7 @@ tr:hover {
 }
 
 th {
-	background-color: #ccc;
+	background-color: #f1f1f1;
 	color: black;
 }
 
@@ -319,7 +315,8 @@ h1 {
 	width: 700px;
 	height: 100px;
 
-	border: 2px solid;
+	border: 1px solid;
+	border-radius: 5px;
 	font-size: 16px;
 	padding: 20px;
 }
