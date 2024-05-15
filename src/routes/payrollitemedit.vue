@@ -209,7 +209,8 @@ export default {
 		return {
 			payroll: '',
 			branchname:'',
-			selectedStatus:''
+			selectedStatus:'',
+				showalert: false
 		};
 	},
 
@@ -218,8 +219,26 @@ export default {
 			window.print();
 		},
 
+		async savePayroll(){
+		 
+			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
+			let id = this.primaryKey;
+
+			const body = { status: this.selectedStatus };
+ 			
+			const bd = await this.$api.updateItem("payrolls",id, body);
+
+			this.showalert = false;
+			this.$router.push('/hrsystem/collections/payrolls');
+		},
+
 		async fetchPayRoll(id) {
 			try {
+				this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
 				console.log('Payroll');
 
 				const res = await this.$api.getItem('payrolls', id, {
@@ -243,7 +262,7 @@ export default {
 				this.showalert = false;
 			}
 		}
-	}
+	},
 };
 </script>
 

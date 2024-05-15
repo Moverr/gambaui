@@ -488,7 +488,7 @@ export default {
 							status: status
 						};
 
-						const bd = await this.$api.createItem('payslip', body); 
+						const bd = await this.$api.updateOne('payslip', body); 
 						payslips.push(bd.data);
 						 
 					} catch (error) {
