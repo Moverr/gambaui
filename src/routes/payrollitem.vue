@@ -465,11 +465,12 @@ export default {
 							(record.gross_salary === undefined ? 0 : record.gross_salary) +
 							record.ledger[0];
 
-						let branch = this.selectedBranch;
+						
 
 						let currency = record.currency;
 
-						let department = this.selectedDepartment;
+						let department = record.department.id;
+					 	let branch = this.selectedBranch;
 
 						let empId = record.id;
 						let status = 'approved';
@@ -488,7 +489,7 @@ export default {
 							status: status
 						};
 
-						const bd = await this.$api.updateOne('payslip', body); 
+						const bd = await this.$api.createItem('payslip', body); 
 						payslips.push(bd.data);
 						 
 					} catch (error) {

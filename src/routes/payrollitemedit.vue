@@ -249,11 +249,13 @@ export default {
 
 				const data = res.data;
  
+				console.log("......KKK.....");
+				console.log(data);
 				
 				if(data.payslips.length > 0 ){
 			 
 					this.selectedStatus = data.status;
-				 	this.branchname = data.payslips[0].payslip_id.branch.name;
+				 	//this.branchname = data.payslips[0].payslip_id.branch.name;
 				 
 				}
 				this.payroll = data; 
