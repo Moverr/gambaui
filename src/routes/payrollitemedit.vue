@@ -8,6 +8,8 @@
 		<div>
 			<v-header :icon-link="`/${currentProjectKey}/collections`" />
 			<v-loader area="content" />
+		 
+		<p>Primary Key: {{ primaryKey }}</p>
 		</div>
 
 		<v-header
@@ -18,6 +20,7 @@
 			item-detail
 			:settings="collection === 'directus_webhooks'"
 		>
+		 
 			<template slot="title">
 				<span
 					v-tooltip="statusName"
@@ -50,31 +53,10 @@
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-			<div class="  drop-down">
-				<label for="">Pay Month</label>
-				<input
-					class="datetime"
-					type="month"
-					name="month"
-					id="month"
-					v-model="selectedMonth"
-					@change="calculateMonthBounds"
-				/>
-
-				<p style="margin-left:10px;">{{ selectedMonth }}</p>
-			</div>
-			&nbsp;
+			
 			<div
 				class=" display_window "
-				style="
-				display: block;
-			 
-				float: left;
-				margin: 10px;
-				margin-top: 15px;
-				font-size: 20px;
-				font-weight: 400;
-	"
+				style=" display: block;  float: left; margin: 10px; margin-top: 15px; font-size: 20px; font-weight: 400;"
 			>
 				<div>From : {{ fromDate }}</div>
 				<div>To : {{ toDate }}</div>
@@ -222,13 +204,24 @@ import { mapState } from 'vuex';
 import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 
 export default {
-	name: 'PayrollItem',
+	name: 'PayrollItemEdit',
 	mounted() {
+
+		console.log("Primary Key:", this.primaryKey);
+
 		this.fetchBranches();
 		this.getBeginningOfMonth();
 		this.getLastDayOfMonth();
 		this.getCurrentMonth();
 	},
+
+		props: {
+		primaryKey: {
+			type: null,
+			required: true
+		}
+	},
+
 
 	computed: {
 		isSelected: {
@@ -488,9 +481,12 @@ export default {
 							status: status
 						};
 
-						const bd = await this.$api.createItem('payslip', body); 
-						payslips.push(bd.data);
-						 
+						const bd = await this.$api.createItem('payslip', body);
+
+						console.log('...................................Congo');
+						console.log(bd);
+						payslips.push(bd);
+						console.log('paid');
 					} catch (error) {
 						console.log(error);
 					} finally {
@@ -498,19 +494,21 @@ export default {
 					}
 				}
 			}
- 
+
+			console.log('Pay slips');
+			console.log(payslips);
+
+			//todo: send data for payroll..
 			if (payslips.length > 0) {
 				//todo: add payslips to the addition
 
 				let paylipObject = [];
 
 				for (let i = 0; i < payslips.length; i++) {
-					let payslipId = payslips[i].id; 
+					let payslipId = payslips[1].id;
 					let payslip = { payslip_id: { id: payslipId } };
 					paylipObject.push(payslip);
 				}
-
-				console.log(paylipObject)
 
 				const requestBody = {
 					status: 'draft',

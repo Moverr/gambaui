@@ -14,6 +14,7 @@ import Item from './routes/item.vue';
 import Login from './routes/login.vue';
 import PayrollItems from './routes/payrollitems.vue';
 import PayrollItem from './routes/payrollitem.vue';
+import PayrollItemEdit from './routes/payrollitemedit.vue';
 import PaySlipItem from './routes/payslipitem.vue';
 
 
@@ -94,12 +95,12 @@ const router = new Router({
 		{
 			path: '/:project/collections/payrolls/:primaryKey',
 			props: true,
-			component: PayrollItem,
+			component: PayrollItemEdit,
 			meta: {
 				infoSidebarWidth: 'wide'
 			}
 		},
-		
+
 
 		
 		{
