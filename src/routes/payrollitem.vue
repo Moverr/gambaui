@@ -269,7 +269,8 @@ export default {
 			msgTitle: '',
 			msgDetail: '',
 			allSelected: false,
-			selectedEmployee: []
+			selectedEmployee: [],
+			saving: false
 		};
 	},
 
@@ -432,6 +433,7 @@ export default {
 		},
 
 		async savePayroll() {
+			this.saving = true;
 			this.showalert = true;
 			this.msgTitle = 'Information';
 			this.msgDetail = 'Processing';
@@ -514,6 +516,7 @@ export default {
 				console.log(paylipObject)
 
 				const requestBody = {
+					branch: this.selectedBranch,
 					status: 'draft',
 					from: from,
 					to: to,

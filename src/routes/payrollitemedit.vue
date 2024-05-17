@@ -34,7 +34,7 @@
 					hover-color="danger-dark"
 					:disabled="!deleteButtonEnabled"
 					:label="$t('Delete Payroll')"
-					@click="confirmRemove=true"
+					@click="confirmRemove = true"
 				/>
 
 				<v-header-button
@@ -61,18 +61,17 @@
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-
-		<template>
-			<portal v-if="confirmRemove" to="modal">
-			<v-confirm
-				:message=" $tc('batch_delete_confirm' ) 	"
-				color="danger"
-				:confirm-text="$t('delete')"
-				@cancel="confirmRemove = false"
-				@confirm="deletePayroll"
-			/>
-		</portal>
-		</template>
+			<template>
+				<portal v-if="confirmRemove" to="modal">
+					<v-confirm
+						:message="$tc('batch_delete_confirm')"
+						color="danger"
+						:confirm-text="$t('delete')"
+						@cancel="confirmRemove = false"
+						@confirm="deletePayroll"
+					/>
+				</portal>
+			</template>
 			<div>
 				<template>
 					<div style=" margin-left: 5px;display:flex">
@@ -266,15 +265,15 @@ export default {
 			deleteButtonEnabled: true,
 			confirmRemove: false,
 			bookmarkModal: false,
-				saving: false,
+			saving: false
 		};
 	},
 
 	methods: {
 		async deletePayroll() {
 			this.saving = true;
-			 
-			  {
+
+			{
 				this.confirmRemove = false;
 				this.showalert = true;
 				this.msgTitle = 'Information';
