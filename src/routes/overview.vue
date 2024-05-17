@@ -2,27 +2,25 @@
 	<div class="dashboard">
 		<div class="overview">
 			<h1>{{ message }}</h1>
+
 			<div class="number-card">
-				<div class="title-card">Head count</div>
+				<div class="title-card">Branches</div>
+				<div class="amount-card">{{ branches_count }}</div>
+			</div>
+
+			<div class="number-card">
+				<div class="title-card">Departments</div>
+				<div class="amount-card">{{ departments_count }}</div>
+			</div>
+
+			<div class="number-card">
+				<div class="title-card">Employees</div>
 				<div class="amount-card">{{ total_head_count }}</div>
 			</div>
 
 			<div class="number-card">
-				<div class="title-card">New Hires</div>
-				<div class="amount-card">{{new_head_count}}</div>
-			 
-			</div>
-
-			<div class="number-card">
-				<div class="title-card">Terminations</div>
-				<div class="amount-card">0</div>
-			 
-			</div>
-
-			<div class="number-card">
-				<div class="title-card">Jobs</div>
-				<div class="amount-card">0</div>
-				 
+				<div class="title-card">Left</div>
+				<div class="amount-card">{{ total_left_count }}</div>
 			</div>
 		</div>
 
@@ -48,238 +46,283 @@
 import * as d3 from 'd3';
 
 export default {
-    name: 'Overvew',
-    mounted() {
-        // this.circleChart();
-        this.barChart();
-        this.lineGraph();
-        this.fetchEmployees();
+	name: 'Overvew',
+	mounted() {
+		// this.circleChart();
+		//this.barChart();
+		//this.lineGraph();
+		this.fetchActiveEmployees();
+		this.fetchLeftEmployees();
+        this.fetchBranches();
+        this.fetchDepartments();
+	},
 
+	data() {
+		return {
+			message: 'Overview',
+			attendance: 'Attendance',
+			pieData: [
+				{ label: 'Category A', value: 30 },
+				{ label: 'Category B', value: 20 },
+				{ label: 'Category C', value: 50 }
+			],
+			attendanceData: [
+				{ name: 'Mon', count: null },
+				{ name: 'Tue', count: null },
+				{ name: 'Wed', count: null },
+				{ name: 'Thur', count: null },
+				{ name: 'Fri', count: null },
+				{ name: 'Sat', count: null },
+				{ name: 'Sun', count: null }
+			],
+			lineData: [
+				{ date: '2024-03-01', value: null },
+				{ date: '2024-03-02', value: null },
+				{ date: '2024-03-03', value: null },
+				{ date: '2024-03-04', value: null },
+				{ date: '2024-03-05', value: null },
+				{ date: '2024-03-06', value: null },
+				{ date: '2024-03-07', value: null },
+				{ date: '2024-03-08', value: null },
+				{ date: '2024-03-09', value: null },
+				{ date: '2024-03-10', value: null }
+			],
+			total_head_count: 0,
+			total_left_count: 0,
+			branches_count: 0,
+			departments_count: 0
+		};
+	},
 
-    },
+	methods: {
+		countEmployeesCreatedThisMonth(employees) {
+			const currentDate = new Date();
+			const currentMonth = currentDate.getMonth();
+			const currentYear = currentDate.getFullYear();
 
-    data() {
-        return {
-            message: 'Overview',
-            attendance: 'Attendance',
-            pieData: [
-                { label: 'Category A', value: 30 },
-                { label: 'Category B', value: 20 },
-                { label: 'Category C', value: 50 }
-            ],
-            attendanceData: [
-                { name: 'Mon', count: null },
-                { name: 'Tue', count: null },
-                { name: 'Wed', count: null },
-                { name: 'Thur', count: null },
-                { name: 'Fri', count: null},
-                { name: 'Sat', count: null },
-                { name: 'Sun', count: null }
-            ],
-            lineData: [
-                { date: '2024-03-01', value: null },
-                { date: '2024-03-02', value: null },
-                { date: '2024-03-03', value: null },
-                { date: '2024-03-04', value: null },
-                { date: '2024-03-05', value: null },
-                { date: '2024-03-06', value: null },
-                { date: '2024-03-07', value: null },
-                { date: '2024-03-08', value: null },
-                { date: '2024-03-09', value: null },
-                { date: '2024-03-10', value: null }
-            ],
-            total_head_count:'',
-             new_head_count:'',
-        };
-    },
+			// Filter employees whose creation month and year match the current month and year
+			const employeesCreatedThisMonth = employees.filter(employee => {
+				const creationDate = new Date(employee.created_on);
+				return creationDate.getFullYear() === currentYear;
+			});
 
-    methods: {
+			return employeesCreatedThisMonth.length;
+		},
 
-          countEmployeesCreatedThisMonth(employees) {
-            const currentDate = new Date();
-            const currentMonth = currentDate.getMonth();
-            const currentYear = currentDate.getFullYear();
-
-            // Filter employees whose creation month and year match the current month and year
-            const employeesCreatedThisMonth = employees.filter(employee => {
-                const creationDate = new Date(employee.created_on);
-                return  creationDate.getFullYear() === currentYear;
-            });
-
-            return employeesCreatedThisMonth.length;
-        },
-
-
-        fetchEmployees() {
-
+		fetchBranches() {
 			const filter = {
+				status: { contains: 'active' }
+			};
 
+			this.$api
+				.getItems('branches', {
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
+					filter
+				})
+				.then(res => {
+					console.log(res);
+					this.branches_count = res.meta.total_count;
+					return res.data;
+				});
+		},
+		fetchDepartments() {
+			const filter = {
+				status: { contains: 'active' }
+			};
+
+			this.$api
+				.getItems('departments', {
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
+					filter
+				})
+				.then(res => {
+					console.log(res);
+					this.departments_count = res.meta.total_count;
+					return res.data;
+				});
+		},
+
+		fetchActiveEmployees() {
+			const filter = {
+				status: { contains: 'active' }
 			};
 
 			this.$api
 				.getItems('employees', {
-					fields: '*.*',
-                    meta:'total_count,result_count,filter_count',
-                    limit:'500',
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
 					filter
 				})
-				.then(res => res.data)
-				.then(data => {
-                    console.log("Overview data")
-					console.log(data);
-
-                    this.total_head_count = data != null ? data.length : 0;
-
-let xt = this.countEmployeesCreatedThisMonth(data)
-
-this.new_head_count = xt;
-
-                    console.log(  this.total_head_count )
+				.then(res => {
+					console.log(res);
+					this.total_head_count = res.meta.filter_count;
+					return res.data;
 				});
 		},
 
-        getDayOfWeekName(dateString) {
-            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
-            const date = new Date(dateString);
-            const dayOfWeek = date.getDay();
-            return daysOfWeek[dayOfWeek];
-        },
-        lineGraph() {
+		fetchLeftEmployees() {
+			const filter = {
+				status: { contains: 'left' }
+			};
 
-            const container = this.$refs.average_working_hours;
-            const margin = { top: 20, right: 20, bottom: 30, left: 50 };
-            const width = 400 - margin.left - margin.right;
-            const height = 300 - margin.top - margin.bottom;
+			this.$api
+				.getItems('employees', {
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
+					filter
+				})
+				.then(res => {
+					console.log(res);
+					this.total_left_count = res.meta.filter_count;
+					return res.data;
+				});
+		},
 
-            const svg = d3.select(container)
-                .append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
+		getDayOfWeekName(dateString) {
+			const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'];
+			const date = new Date(dateString);
+			const dayOfWeek = date.getDay();
+			return daysOfWeek[dayOfWeek];
+		},
+		lineGraph() {
+			const container = this.$refs.average_working_hours;
+			const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+			const width = 400 - margin.left - margin.right;
+			const height = 300 - margin.top - margin.bottom;
 
-            const x = d3.scaleTime()
-                .domain(d3.extent(this.lineData, d =>parseInt(""+new Date(d.date).getDate(),10)))
-                .range([0, width]);
+			const svg = d3
+				.select(container)
+				.append('svg')
+				.attr('width', width + margin.left + margin.right)
+				.attr('height', height + margin.top + margin.bottom)
+				.append('g')
+				.attr('transform', `translate(${margin.left},${margin.top})`);
 
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(this.lineData, d => d.value)])
-                .range([height, 0]);
+			const x = d3
+				.scaleTime()
+				.domain(
+					d3.extent(this.lineData, d => parseInt('' + new Date(d.date).getDate(), 10))
+				)
+				.range([0, width]);
 
-            const line = d3.line()
-                .x(d => x( parseInt(""+new Date(d.date).getDate(),10)))
-                .y(d => y(d.value));
+			const y = d3
+				.scaleLinear()
+				.domain([0, d3.max(this.lineData, d => d.value)])
+				.range([height, 0]);
 
-            svg.append('path')
-                .datum(this.lineData)
-                .attr('fill', 'none')
-                .attr('stroke', 'steelblue')
-                .attr('stroke-width', 1.5)
-                .attr('d', line);
+			const line = d3
+				.line()
+				.x(d => x(parseInt('' + new Date(d.date).getDate(), 10)))
+				.y(d => y(d.value));
 
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(d3.axisBottom(x));
+			svg.append('path')
+				.datum(this.lineData)
+				.attr('fill', 'none')
+				.attr('stroke', 'steelblue')
+				.attr('stroke-width', 1.5)
+				.attr('d', line);
 
-            svg.append('g')
-                .call(d3.axisLeft(y));
+			svg.append('g')
+				.attr('transform', `translate(0,${height})`)
+				.call(d3.axisBottom(x));
 
+			svg.append('g').call(d3.axisLeft(y));
+		},
+		barChart() {
+			// Access the chart container using `this.$refs`
+			const container = this.$refs.attendance_bar_chart;
 
+			// Set the dimensions of the chart
+			const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+			const width = 400 - margin.left - margin.right;
+			const height = 300 - margin.top - margin.bottom;
 
-        },
-        barChart() {
-            // Access the chart container using `this.$refs`
-            const container = this.$refs.attendance_bar_chart;
+			// Create the SVG element
+			const svg = d3
+				.select(container)
+				.append('svg')
+				.attr('width', width + margin.left + margin.right)
+				.attr('height', height + margin.top + margin.bottom)
+				.append('g')
+				.attr('transform', `translate(${margin.left},${margin.top})`);
 
-            // Set the dimensions of the chart
-            const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-            const width = 400 - margin.left - margin.right;
-            const height = 300 - margin.top - margin.bottom;
+			// Create scales
+			const x = d3
+				.scaleBand()
+				.range([0, width])
+				.padding(0.1)
+				.domain(this.attendanceData.map(d => d.name));
 
-            // Create the SVG element
-            const svg = d3.select(container)
-                .append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom)
-                .append('g')
-                .attr('transform', `translate(${margin.left},${margin.top})`);
+			const y = d3
+				.scaleLinear()
+				.range([height, 0])
+				.domain([0, d3.max(this.attendanceData, d => d.count)]);
 
-            // Create scales
-            const x = d3.scaleBand()
-                .range([0, width])
-                .padding(0.1)
-                .domain(this.attendanceData.map(d => d.name));
+			// Add bars
+			svg.selectAll('.bar')
+				.data(this.attendanceData)
+				.enter()
+				.append('rect')
+				.attr('class', 'bar')
+				.attr('x', d => x(d.name))
+				.attr('width', x.bandwidth())
+				.attr('y', d => y(d.count))
+				.attr('height', d => height - y(d.count));
 
-            const y = d3.scaleLinear()
-                .range([height, 0])
-                .domain([0, d3.max(this.attendanceData, d => d.count)]);
+			// Add x-axis
+			svg.append('g')
+				.attr('transform', `translate(0,${height})`)
+				.call(d3.axisBottom(x));
 
-            // Add bars
-            svg.selectAll('.bar')
-                .data(this.attendanceData)
-                .enter().append('rect')
-                .attr('class', 'bar')
-                .attr('x', d => x(d.name))
-                .attr('width', x.bandwidth())
-                .attr('y', d => y(d.count))
-                .attr('height', d => height - y(d.count));
+			// Add y-axis
+			svg.append('g').call(d3.axisLeft(y));
+		},
+		circleChart() {
+			const container = this.$refs.chart;
+			const width = 200;
+			const height = 200;
+			const radius = Math.min(width, height) / 2;
 
-            // Add x-axis
-            svg.append('g')
-                .attr('transform', `translate(0,${height})`)
-                .call(d3.axisBottom(x));
+			const svg = d3
+				.select(container)
+				.append('svg')
+				.attr('width', width)
+				.attr('height', height)
+				.append('g')
+				.attr('transform', `translate(${width / 2},${height / 2})`);
 
-            // Add y-axis
-            svg.append('g')
-                .call(d3.axisLeft(y));
+			const color = d3
+				.scaleOrdinal()
+				.domain(this.pieData.map(d => d.label))
+				.range(d3.schemeCategory10);
 
-        },
-        circleChart() {
+			const pie = d3.pie().value(d => d.value);
 
-            const container = this.$refs.chart;
-            const width = 200;
-            const height = 200;
-            const radius = Math.min(width, height) / 2;
+			const arcs = pie(this.pieData);
 
-            const svg = d3.select(container)
-                .append('svg')
-                .attr('width', width)
-                .attr('height', height)
-                .append('g')
-                .attr('transform', `translate(${width / 2},${height / 2})`);
+			const arc = d3
+				.arc()
+				.innerRadius(0)
+				.outerRadius(radius);
 
-            const color = d3.scaleOrdinal()
-                .domain(this.pieData.map(d => d.label))
-                .range(d3.schemeCategory10);
+			svg.selectAll('path')
+				.data(arcs)
+				.enter()
+				.append('path')
+				.attr('d', arc)
+				.attr('fill', d => color(d.data.label));
 
-            const pie = d3.pie()
-                .value(d => d.value);
-
-            const arcs = pie(this.pieData);
-
-            const arc = d3.arc()
-                .innerRadius(0)
-                .outerRadius(radius);
-
-            svg.selectAll('path')
-                .data(arcs)
-                .enter()
-                .append('path')
-                .attr('d', arc)
-                .attr('fill', d => color(d.data.label));
-
-            svg.selectAll('text')
-                .data(arcs)
-                .enter()
-                .append('text')
-                .attr('transform', d => `translate(${arc.centroid(d)})`)
-                .attr('text-anchor', 'middle')
-                .text(d => d.data.label);
-
-
-        },
-    },
-
+			svg.selectAll('text')
+				.data(arcs)
+				.enter()
+				.append('text')
+				.attr('transform', d => `translate(${arc.centroid(d)})`)
+				.attr('text-anchor', 'middle')
+				.text(d => d.data.label);
+		}
+	}
 };
 </script>
 
@@ -312,7 +355,7 @@ this.new_head_count = xt;
 .number-card {
 	width: 232px;
 	height: 100px;
-	background: #eee;
+	background: #ddd5bc;
 	float: left;
 	border-radius: 5px;
 	margin-left: 10px;
