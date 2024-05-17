@@ -7,7 +7,7 @@
 
 		<div>
 			<v-header :icon-link="`/${currentProjectKey}/collections`" />
-			<v-loader area="content" /> 
+			<v-loader area="content" />
 		</div>
 
 		<v-header
@@ -27,7 +27,18 @@
 			</template>
 			<template slot="buttons">
 				<v-header-button
-					key="add"
+					key="delete"
+					icon="delete_outline"
+					icon-color="white"
+					background-color="button-primary-background-color"
+					hover-color="danger-dark"
+					:disabled="!deleteButtonEnabled"
+					:label="$t('Delete Payroll')"
+					@click="confirmRemove=true"
+				/>
+
+				<v-header-button
+					key="print"
 					icon="print"
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
@@ -50,40 +61,55 @@
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-		<div> 
-		
+
 		<template>
-  <div style=" margin-left: 5px;display:flex">
-  &nbsp;Status
-  <div class="radios">
-    <label>
-      <input type="radio" name="radio" v-model="selectedStatus" value="draft">
-      Draft
-    </label>
-    <label>
-      <input type="radio" name="radio" v-model="selectedStatus" value="declined">
-      Declined
-    </label>
+			<portal v-if="confirmRemove" to="modal">
+			<v-confirm
+				:message=" $tc('batch_delete_confirm' ) 	"
+				color="danger"
+				:confirm-text="$t('delete')"
+				@cancel="confirmRemove = false"
+				@confirm="deletePayroll"
+			/>
+		</portal>
+		</template>
+			<div>
+				<template>
+					<div style=" margin-left: 5px;display:flex">
+						&nbsp;Status
+						<div class="radios">
+							<label>
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="draft"
+								/>
+								Draft
+							</label>
+							<label>
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="declined"
+								/>
+								Declined
+							</label>
 
-	 <input type="radio" name="radio" v-model="selectedStatus" value="deleted">
-      Deleted
-    </label>
-
-
-    <label>
-      <input type="radio" name="radio" v-model="selectedStatus" value="paid">
-      Paid
-    </label>
-    <label>
-      <input type="radio" name="radio" v-model="selectedStatus" value="approved">
-      Approved
-    </label>
-  </div>
-  </div>
-</template>
-
-
-		</div>
+							<label>
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="approved"
+								/>
+								Approved
+							</label>
+						</div>
+					</div>
+				</template>
+			</div>
 			<div
 				v-if="payroll !== ''"
 				class=" display_window "
@@ -94,17 +120,11 @@
 			</div>
 		</div>
 		<br />
-		<div
-			v-if="payroll !== ''"
-			class="inline-form "
-			style="margin-top: 10px; margin-left:40px;"
-		>
+		<div v-if="payroll !== ''" class="inline-form " style="margin-top: 10px; margin-left:40px;">
 			<form action="" method="post">
 				<div class="  drop-down">
-					<label for="">Branch : {{branchname}}</label>
+					<label for="">Branch : {{ branchname }}</label>
 				</div>
-
-				 
 			</form>
 		</div>
 
@@ -113,8 +133,8 @@
 				<table border="0">
 					<thead>
 						<tr>
-							<th>
-								.
+							<th style="text-align:center;" colspan="2">
+								STATUS
 							</th>
 
 							<th>Deparment</th>
@@ -140,8 +160,14 @@
 							:value="payslip.id"
 						>
 							<td>
-								<button>Details </button>
+								<input
+									:key="payslip.id"
+									type="checkbox"
+									v-model="payslip.checked"
+									@change="updateCheckedItems(payslip.id)"
+								/>
 							</td>
+							<td>{{ payslip.payslip_id.status }}</td>
 							<td>{{ payslip.payslip_id.department.name }}</td>
 							<td>{{ payslip.payslip_id.employee.position }}</td>
 							<td>
@@ -149,8 +175,8 @@
 								{{ payslip.payslip_id.employee.last_name }}
 							</td>
 							<td>-</td>
-							<td v-model="fromDate">{{ payslip.payslip_id.from }}</td>
-							<td v-model="toDate">{{ payslip.payslip_id.to }}</td>
+							<td>{{ payslip.payslip_id.from }}</td>
+							<td>{{ payslip.payslip_id.to }}</td>
 							<td>{{ payslip.payslip_id.employee.account_number }}</td>
 							<td>{{ payslip.payslip_id.employee.bank_name }}</td>
 							<td>{{ payslip.payslip_id.employee.account_name }}</td>
@@ -203,33 +229,140 @@ export default {
 		}
 	},
 
-	computed: {},
+	computed: {
+		iconLink() {
+			return `/${this.currentProjectKey}/collections/payrolls`;
+		},
+
+		breadcrumb() {
+			let breadcrumb = [];
+
+			breadcrumb.push(
+				{
+					name: 'Payroll',
+					path: `/${this.currentProjectKey}/collections/payrolls`
+				},
+
+				{
+					name: 'Edit Payroll',
+					path: `/${this.currentProjectKey}/collections/payrolls/edit`
+				}
+			);
+
+			return breadcrumb;
+		}
+	},
 
 	data() {
 		return {
 			payroll: '',
-			branchname:'',
-			selectedStatus:'',
+			branchname: '',
+			selectedStatus: '',
 			showalert: false,
 			selectedMonth: '',
+			checkedItems: [],
+			uncheckedItems: [],
+			currentProjectKey: 'hrsystem',
+			deleteButtonEnabled: true,
+			confirmRemove: false,
+			bookmarkModal: false,
+				saving: false,
 		};
 	},
 
 	methods: {
+		async deletePayroll() {
+			this.saving = true;
+			 
+			  {
+				this.confirmRemove = false;
+				this.showalert = true;
+				this.msgTitle = 'Information';
+				this.msgDetail = 'Processing';
+
+				try {
+					const payslips = this.payroll.payslips;
+					const updatePromises = payslips.map(record => {
+						const body = { status: 'deleted' };
+						return this.$api
+							.updateItem('payslip', record.payslip_id.id, body)
+							.then(res => {
+								console.log(`Payslip ${record.payslip_id.id} updated to ${status}`);
+								return res;
+							})
+							.catch(error => {
+								console.error(
+									`Error updating payslip ${record.payslip_id.id}:`,
+									error
+								);
+								return null; // Handle error or retry logic if necessary
+							});
+					});
+				} catch (er) {
+					console.log(er);
+				}
+
+				const body = { status: 'deleted' };
+
+				const bd = await this.$api.updateItem('payrolls', this.primaryKey, body);
+
+				this.showalert = false;
+				this.$router.push('/hrsystem/collections/payrolls');
+			}
+		},
+		newItem() {},
+		updateCheckedItems(id) {
+			this.payroll.payslips = this.payroll.payslips.map(payslip =>
+				payslip.id === id
+					? {
+							...payslip,
+							payslip_id: {
+								...payslip.payslip_id,
+								checked: !payslip.payslip_id.checked
+							}
+					  }
+					: payslip
+			);
+			console.log(this.payroll.payslips);
+		},
+		getPayslipsByCheckedStatus(checked) {
+			return this.payroll.payslips.filter(payslip => payslip.payslip_id.checked === checked);
+		},
 		printPage() {
 			window.print();
 		},
 
-		async savePayroll(){
-		 
+		async savePayroll() {
+			this.saving = true;
 			this.showalert = true;
 			this.msgTitle = 'Information';
 			this.msgDetail = 'Processing';
 			let id = this.primaryKey;
 
-			const body = { status: this.selectedStatus };
- 			
-			const bd = await this.$api.updateItem("payrolls",id, body);
+			console.log('.......................MMM....................');
+			console.log(this.payroll);
+
+			const payslips = this.payroll.payslips;
+			const modified_on = new Date();
+			const updatePromises = payslips.map(record => {
+				const status = record.checked ? 'paid' : 'not_paid';
+
+				const body = { status, modified_on };
+				return this.$api
+					.updateItem('payslip', record.payslip_id.id, body)
+					.then(res => {
+						console.log(`Payslip ${record.payslip_id.id} updated to ${status}`);
+						return res;
+					})
+					.catch(error => {
+						console.error(`Error updating payslip ${record.payslip_id.id}:`, error);
+						return null; // Handle error or retry logic if necessary
+					});
+			});
+
+			const body = { status: this.selectedStatus, modified_on };
+
+			const bd = await this.$api.updateItem('payrolls', id, body);
 
 			this.showalert = false;
 			this.$router.push('/hrsystem/collections/payrolls');
@@ -238,8 +371,8 @@ export default {
 		async fetchPayRoll(id) {
 			try {
 				this.showalert = true;
-			this.msgTitle = 'Information';
-			this.msgDetail = 'Processing';
+				this.msgTitle = 'Information';
+				this.msgDetail = 'Processing';
 				console.log('Payroll');
 
 				const res = await this.$api.getItem('payrolls', id, {
@@ -248,24 +381,37 @@ export default {
 				});
 
 				const data = res.data;
- 
-				console.log("......KKK.....");
+
+				console.log('......KKK.....');
 				console.log(data);
-				
-				if(data.payslips.length > 0 ){
-			 
+
+				if (data.payslips.length > 0) {
 					this.selectedStatus = data.status;
-				 	//this.branchname = data.payslips[0].payslip_id.branch.name;
-				 
+
+					this.branchname =
+						data.payslips[0].payslip_id !== null
+							? data.payslips[0].payslip_id.branch.name
+							: '';
 				}
-				this.payroll = data; 
+				const bda = data.payslips.map(payslip => ({
+					...payslip,
+					checked: payslip.payslip_id.status === 'paid'
+				}));
+				console.log('.....Banga.........');
+				console.log(bda);
+				data.payslips = bda;
+
+				console.log('.....bdda.........');
+				console.log(data);
+
+				this.payroll = data;
 			} catch (error) {
 				console.error('Error fetching employees:', error);
 			} finally {
 				this.showalert = false;
 			}
 		}
-	},
+	}
 };
 </script>
 
@@ -417,13 +563,28 @@ button {
 	border-radius: 10px 10px 0px 0px;
 	border-top: 1px solid #eee;
 }
-.radios{
-	padding-left:15px;
+.radios {
+	padding-left: 15px;
 }
-.radios label{
-	float:left;
-	width:100px; 
-	font-size:14px;
-	cursor:pointer;
+.radios label {
+	float: left;
+	width: 100px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+	accent-color: #ccc; /* Changes the checkbox color */
+	cursor: pointer;
+}
+
+label {
+	font-size: 16px;
+	margin-left: 8px;
+}
+.danger-dark {
+	background: #eee;
 }
 </style>
