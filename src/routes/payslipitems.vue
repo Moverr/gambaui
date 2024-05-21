@@ -42,28 +42,7 @@
 				@clear-filters="clearFilters"
 			/>
 			<template slot="buttons">
-				<v-header-button
-					v-if="editButton && !activity"
-					key="edit"
-					icon="mode_edit"
-					background-color="warning"
-					icon-color="white"
-					hover-color="warning-dark"
-					:disabled="!editButtonEnabled"
-					:label="$t('batch')"
-					:to="batchURL"
-				/>
-				<v-header-button
-					v-if="deleteButton && !activity"
-					key="delete"
-					icon="delete_outline"
-					icon-color="white"
-					background-color="danger"
-					hover-color="danger-dark"
-					:disabled="!deleteButtonEnabled"
-					:label="$t('delete')"
-					@click="confirmRemove = true"
-				/>
+			 
 				<v-header-button
 					v-if="addButton && !activity"
 					key="add"
