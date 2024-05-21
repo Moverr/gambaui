@@ -96,6 +96,18 @@
 								Declined
 							</label>
 
+								<label>
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="submitted"
+								/>
+								Submitted
+							</label>
+
+
+
 							<label>
 								<input
 									type="radio"
@@ -159,7 +171,11 @@
 							:value="payslip.id"
 						>
 							<td>
-								<input
+								 
+								<input  
+							
+								:disabled="payroll.status !== 'approved'"	
+									
 									:key="payslip.id"
 									type="checkbox"
 									v-model="payslip.checked"
