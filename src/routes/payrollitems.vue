@@ -45,7 +45,7 @@
 			 
 				<v-header-button
 					v-if="addButton && !activity"
-					key="add"
+					key="printPage"
 					icon="print"
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
@@ -56,7 +56,7 @@
 
    <v-header-button
                 v-if="addButton && !activity"
-                key="add"
+                key="createPaySlip"
                 icon="receipt"
                 icon-color="button-primary-text-color"
                 background-color="button-primary-background-color"
@@ -67,7 +67,7 @@
 
                 <v-header-button
                 v-if="addButton && !activity"
-                key="add"
+                key="createPayRoll"
                 icon="recent_actors"
                 icon-color="button-primary-text-color"
                 background-color="button-primary-background-color"

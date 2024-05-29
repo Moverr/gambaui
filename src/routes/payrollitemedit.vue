@@ -26,7 +26,8 @@
 				/>
 			</template>
 			<template slot="buttons">
-				<v-header-button
+		 
+				<v-header-button    v-if="deleteStatus.create === 'full'"
 					key="delete"
 					icon="delete_outline"
 					icon-color="white"
@@ -36,8 +37,8 @@
 					:label="$t('Delete Payroll')"
 					@click="confirmRemove = true"
 				/>
-
-				<v-header-button
+ 
+				<v-header-button  v-if="createStatus.read === 'full'"
 					key="print"
 					icon="print"
 					icon-color="button-primary-text-color"
@@ -46,7 +47,7 @@
 					@click="printPage"
 				/>
 
-				<v-header-button
+				<v-header-button  v-if="createStatus.create === 'full'"
 					:loading="saving"
 					:label="$t('save')"
 					:options="saveOptions"
@@ -55,7 +56,8 @@
 					background-color="button-primary-background-color"
 					hover-color="button-primary-background-color-hover"
 					@click="savePayroll"
-					@input="save"
+					 
+					key="save"
 				/>
 			</template>
 		</v-header>
@@ -77,7 +79,7 @@
 					<div style=" margin-left: 5px;display:flex">
 						&nbsp;Status
 						<div class="radios">
-							<label>
+							<label  v-if="draftStatus.create === 'full'" >
 								<input
 									type="radio"
 									name="radio"
@@ -86,7 +88,7 @@
 								/>
 								Draft
 							</label>
-							<label>
+							<label  v-if="declinedStatus.create === 'full'" >
 								<input
 									type="radio"
 									name="radio"
@@ -96,7 +98,7 @@
 								Declined
 							</label>
 
-								<label>
+								<label  v-if="submitedStatus.create === 'full'">
 								<input
 									type="radio"
 									name="radio"
@@ -108,7 +110,7 @@
 
 
 
-							<label>
+							<label  v-if="approvedStatus.create === 'full'">
 								<input
 									type="radio"
 									name="radio"
@@ -235,6 +237,7 @@ export default {
 	mounted() {
 		console.log('Primary Key:', this.primaryKey);
 		this.fetchPayRoll(this.primaryKey);
+		this.fetchPermissions();
 	},
 
 	props: {
@@ -245,6 +248,7 @@ export default {
 	},
 
 	computed: {
+		
 		iconLink() {
 			return `/${this.currentProjectKey}/collections/payrolls`;
 		},
@@ -270,6 +274,10 @@ export default {
 
 	data() {
 		return {
+			singleItem:null,
+			Print:'Print',
+			statusColor:'',
+			statusName:'',
 			payroll: '',
 			branchname: '',
 			selectedStatus: '',
@@ -281,11 +289,40 @@ export default {
 			deleteButtonEnabled: true,
 			confirmRemove: false,
 			bookmarkModal: false,
-			saving: false
+			saving: false,
+			permissions:null,
+			collection:"payrolls",
+			submitedStatus:null,
+			approvedStatus:null,
+			declinedStatus:null,
+			draftStatus:null,
+			deleteStatus:null,
+			createStatus:null
 		};
 	},
 
 	methods: {
+		saveOptions(){},
+		fetchPermissions() {
+			console.log("zuma bill");
+			let permissions =  this.$store.state.permissions[this.collection];
+			console.log("Permissions off payrrolls")
+			console.log(permissions);
+
+			//const {approved,submitted, declined} = permissions.statuses.approved.create;
+		const { approved, submitted, declined,draft,deleted } = permissions.statuses;
+
+		this.approvedStatus = approved;
+		this.submitedStatus = submitted;
+		this.declinedStatus = declined;
+		this.draftStatus = draft;
+		this.deleteStatus = deleted;
+		this.createStatus = permissions.$create;
+			
+		},
+	isSaveButtonEnabled(){
+		return false;
+	},
 		async deletePayroll() {
 			this.saving = true;
 
