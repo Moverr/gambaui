@@ -1,7 +1,6 @@
 <template>
 	<v-not-found v-if="notFound" />
 	<div v-else class="route-item-listing">
-     
 		<v-header
 			info-toggle
 			:item-detail="false"
@@ -42,40 +41,35 @@
 				@clear-filters="clearFilters"
 			/>
 			<template slot="buttons">
-			 
 				<v-header-button
 					v-if="addButton && !activity"
-					key="add"
+					key="printPage"
 					icon="print"
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
-				  :label="$t('  Print')"
-                    @click="printPage"
-					 
+					:label="$t('  Print')"
+					@click="printPage"
 				/>
 
-   <v-header-button
-                v-if="addButton && !activity"
-                key="add"
-                icon="receipt"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="$t('  Payslip')"
-                :to="createPaySlip"
-            />
+				<v-header-button
+					v-if="addButton && !activity"
+					key="createPaySlip"
+					icon="receipt"
+					icon-color="button-primary-text-color"
+					background-color="button-primary-background-color"
+					:label="$t('  Payslip')"
+					:to="createPaySlip"
+				/>
 
-
-                <v-header-button
-                v-if="addButton && !activity"
-                key="add"
-                icon="recent_actors"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="$t('  Payroll')"
-                :to="createPayroll"
-            />
-
-
+				<v-header-button
+					v-if="addButton && !activity"
+					key="createPayroll"
+					icon="recent_actors"
+					icon-color="button-primary-text-color"
+					background-color="button-primary-background-color"
+					:label="$t('  Payroll')"
+					:to="createPayroll"
+				/>
 			</template>
 		</v-header>
 
@@ -168,28 +162,34 @@ import { isEqual, isEmpty, isNil, find, findIndex, keyBy } from 'lodash';
 import api from '../api';
 
 export default {
-    name: 'PaySlipItems',
-    metaInfo() {
+	name: 'PaySlipItems',
+	metaInfo() {
 		return {
 			title: this.$helpers.formatTitle(this.collection)
 		};
 	},
-    components: {
+	components: {
 		VSearchFilter,
 		VNotFound,
 		VCreateBookmark
 	},
-    data() {
+	data() {
 		return {
 			selection: [],
 			meta: null,
 			preferences: null,
 			confirmRemove: false,
 			bookmarkModal: false,
-			notFound: false
+			notFound: false,
+			submitedStatus: null,
+			approvedStatus: null,
+			declinedStatus: null,
+			draftStatus: null,
+			deleteStatus: null,
+			createStatus: null
 		};
 	},
-    computed: {
+	computed: {
 		...mapState(['currentProjectKey']),
 		activity() {
 			return this.collection === 'directus_activity';
@@ -198,16 +198,14 @@ export default {
 			if (this.collection === 'directus_webhooks') return 'arrow_back';
 			return this.collectionInfo?.icon || 'box';
 		},
-		createPayroll() { 
+		createPayroll() {
 			return `/${this.currentProjectKey}/collections/payrolls/create`;
 		},
 
-		createPaySlip() { 
+		createPaySlip() {
 			return `/${this.currentProjectKey}/collections/payrolls/createslip`;
 		},
 
-
-		
 		breadcrumb() {
 			if (this.collection === 'directus_users') {
 				return [
@@ -545,7 +543,7 @@ export default {
 			return enabled;
 		}
 	},
-    watch: {
+	watch: {
 		$route() {
 			if (this.$route.query.b) {
 				this.$router.replace({
@@ -554,15 +552,31 @@ export default {
 			}
 		}
 	},
-    methods: {
-        
+	methods: {
+		fetchPermissions() {
+			console.log('zuma bill');
+			let permissions = this.$store.state.permissions[this.collection];
+			console.log('Permissions off payrrolls');
+			console.log(permissions);
+
+			//const {approved,submitted, declined} = permissions.statuses.approved.create;
+			const { approved, submitted, declined, draft, deleted } = permissions.statuses;
+
+			this.approvedStatus = approved;
+			this.submitedStatus = submitted;
+			this.declinedStatus = declined;
+			this.draftStatus = draft;
+			this.deleteStatus = deleted;
+			this.createStatus = permissions.$create;
+		},
+
 		keyBy: keyBy,
 		setMeta(meta) {
 			this.meta = meta;
 		},
-        printPage() {
-      window.print();
-    },
+		printPage() {
+			window.print();
+		},
 		editCollection() {
 			if (!this.$store.state.currentUser.admin) return;
 			this.$router.push(`/${this.currentProjectKey}/settings/collections/${this.collection}`);
@@ -688,11 +702,11 @@ export default {
 				});
 		}
 	},
-    beforeRouteEnter(to, from, next) {
-        console.log("Plain and simple");
-        console.log(to);
-        console.log(to.params);
-        to.params.collection = 'payslip'
+	beforeRouteEnter(to, from, next) {
+		console.log('Plain and simple');
+		console.log(to);
+		console.log(to.params);
+		to.params.collection = 'payslip';
 		let { collection } = to.params;
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
@@ -710,17 +724,36 @@ export default {
 		const id = shortid.generate();
 		store.dispatch('loadingStart', { id });
 
+ 
 		return api
 			.getMyListingPreferences(collection)
 			.then(preferences => {
 				store.dispatch('loadingFinished', id);
+				console.log("......");
+				//todo: improve this to make sure u fetch user details ::  
+				preferences.filters = [
+    {
+        "field": "employee",
+        "operator": "contains",
+        "value": "boah"
+    },
+	 {
+        "field": "employee",
+        "operator": "contains",
+        "value": "bright"
+    }
+];	
+				console.log(preferences);
+				console.log("......");
 				next(vm => {
+					console.log('preferences');
+					console.log(preferences);
 					vm.$data.preferences = preferences;
 				});
 			})
 			.catch(error => {
-                console.log("Plain and simple");
-                console.log(error);
+				console.log('Error in the lo');
+				console.log(error);
 				store.dispatch('loadingFinished', id);
 				this.$events.emit('error', {
 					notify: this.$t('something_went_wrong_body'),
@@ -728,8 +761,8 @@ export default {
 				});
 			});
 	},
-    beforeRouteUpdate(to, from, next) {
-        to.params.collection = 'payrolls'
+	beforeRouteUpdate(to, from, next) {
+		to.params.collection = 'payslip';
 		const { collection } = to.params;
 
 		this.preferences = null;
@@ -755,6 +788,9 @@ export default {
 			.getMyListingPreferences(collection)
 			.then(preferences => {
 				this.$store.dispatch('loadingFinished', id);
+				console.log('preferences');
+				console.log(preferences);
+
 				this.preferences = preferences;
 				next();
 			})
@@ -766,12 +802,8 @@ export default {
 				});
 			});
 	}
-
-}
-
+};
 </script>
-
-
 
 <style lang="scss" scoped>
 .bookmark,
@@ -827,5 +859,3 @@ export default {
 	margin-bottom: 64px;
 }
 </style>
-
-
