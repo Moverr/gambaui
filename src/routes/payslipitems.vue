@@ -29,7 +29,7 @@
 					/>
 				</button>
 			</template>
-			<v-search-filter
+			<v-search-filter disabled
 				v-show="selection && selection.length === 0 && !emptyCollection"
 				:filters="filters"
 				:search-query="searchQuery"
