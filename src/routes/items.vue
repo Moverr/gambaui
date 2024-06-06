@@ -702,6 +702,10 @@ export default {
         console.log(to.params);
 		let { collection } = to.params;
 
+		console.log("Collections");
+		console.log(collection);
+			console.log("Collections");
+
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
 
@@ -718,10 +722,73 @@ export default {
 		const id = shortid.generate();
 		store.dispatch('loadingStart', { id });
 
+
+			const userPermissions = store.state.permissions; 
+
+		const currentUser =  store.state.currentUser;
+
+		console.log("Current User ");
+		console.log(currentUser);
+			console.log("Current User ");
+
+	const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
+
+	const addmin = userPermissions.view === 'full' || currentUser.admin || adminRoles.includes(currentUser.role.name);
+
+
+	 
+
+
+
 		return api
 			.getMyListingPreferences(collection)
 			.then(preferences => {
+
+
 				store.dispatch('loadingFinished', id);
+
+
+					//todo: improve this to make sure u fetch user details ::  
+				if(addmin === true){
+
+				}else{
+
+
+
+					if(collection === "payment_ledger"){
+							preferences.filters = [
+									{
+										"field": "employee",
+										"operator": "contains",
+										"value":  currentUser.first_name
+									},
+									{
+										"field": "employee",
+										"operator": "contains",
+										"value": currentUser.last_name
+									}
+								];	
+					}
+
+					if(collection === "employees"){
+							preferences.filters = [
+									{
+										"field": "first_name",
+										"operator": "eq",
+										"value":  currentUser.first_name
+									},
+									{
+										"field": "last_name",
+										"operator": "eq",
+										"value": currentUser.last_name
+									}
+								];	
+					}
+					
+				}
+				
+
+
 				next(vm => {
 					vm.$data.preferences = preferences;
 				});

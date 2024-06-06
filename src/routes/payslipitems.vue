@@ -766,8 +766,9 @@ export default {
 		console.log(currentUser);
 			console.log("Current User ");
 
-		const addmin =  userPermissions.view === 'full' || currentUser.admin || currentUser.role.name === 'Administrator' || currentUser.role.name === 'Administrator_' || currentUser.role.name === 'Admin HR'    ;
+	const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
 
+	const addmin = userPermissions.view === 'full' || currentUser.admin || adminRoles.includes(currentUser.role.name);
 
 
 	 
