@@ -650,6 +650,9 @@ h1 {
 	word-spacing: 1%;
 }
 
+
+
+
 .lightbox {
 	position: fixed;
 	background: #eee;
@@ -687,4 +690,6 @@ h1 {
 		font-size: 12px;
 	}
 }
+
+
 </style>

@@ -580,19 +580,43 @@ button {
 	}
 }
 
+
 .lightbox {
 	position: fixed;
 	background: #eee;
 
 	margin: auto;
-	margin-left: 10%;
-	width: 700px;
-	height: 100px;
+	left: 10%;
+	right: 10%;
+	width: 80%;
+	max-width: 700px;
+	height: auto;
 
 	border: 1px solid;
 	border-radius: 5px;
 	font-size: 16px;
 	padding: 20px;
+	box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+	.lightbox {
+		left: 5%;
+		right: 5%;
+		width: 90%;
+		padding: 15px;
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 480px) {
+	.lightbox {
+		left: 2.5%;
+		right: 2.5%;
+		width: 95%;
+		padding: 10px;
+		font-size: 12px;
+	}
 }
 
 .checkbox {
