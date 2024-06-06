@@ -135,7 +135,7 @@
 			</form>
 		</div>
 
-		<div>
+		<div  v-if="employees && employees.length > 0" >
 			<div class="tabular-data" style="margin-top: 10px; margin-left:50px;">
 				<table border="0">
 					<thead>
@@ -716,7 +716,7 @@ export default {
 }
 
 .inline-form {
-	width: 1000%;
+	width: 100%;
 	float: left;
 	padding: 5px;
 	padding-left: 15px;
@@ -826,14 +826,37 @@ button {
 	background: #eee;
 
 	margin: auto;
-	margin-left: 10%;
-	width: 700px;
-	height: 100px;
+	left: 10%;
+	right: 10%;
+	width: 80%;
+	max-width: 700px;
+	height: auto;
 
 	border: 1px solid;
 	border-radius: 5px;
 	font-size: 16px;
 	padding: 20px;
+	box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+	.lightbox {
+		left: 5%;
+		right: 5%;
+		width: 90%;
+		padding: 15px;
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 480px) {
+	.lightbox {
+		left: 2.5%;
+		right: 2.5%;
+		width: 95%;
+		padding: 10px;
+		font-size: 12px;
+	}
 }
 
 .checkbox {

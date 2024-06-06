@@ -475,7 +475,7 @@ export default {
 }
 
 .inline-form {
-	width: 1000%;
+	width: 100%;
 	float: left;
 	padding: 5px;
 	padding-left: 15px;

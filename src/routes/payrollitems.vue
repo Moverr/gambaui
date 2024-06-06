@@ -54,6 +54,17 @@
 					 
 				/>
 
+
+                <v-header-button
+                v-if="addButton && !activity"
+                key="createPayRoll"
+                icon="recent_actors"
+                icon-color="button-primary-text-color"
+                background-color="button-primary-background-color"
+                :label="$t('  Payroll')"
+                :to="createPayroll"
+            />
+			
    <v-header-button
                 v-if="addButton && !activity"
                 key="createPaySlip"
@@ -65,15 +76,6 @@
             />
 
 
-                <v-header-button
-                v-if="addButton && !activity"
-                key="createPayRoll"
-                icon="recent_actors"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="$t('  Payroll')"
-                :to="createPayroll"
-            />
 
 
 			</template>

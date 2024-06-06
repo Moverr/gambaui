@@ -1,5 +1,28 @@
 <template>
 	<div class="dashboard">
+
+			<v-header
+			:breadcrumb="breadcrumb"
+			:info-toggle="!newItem && !batch && !activityDetail"
+			:icon-link="iconLink"
+			:icon="singleItem ? collectionInfo.icon || 'box' : 'arrow_back'"
+			item-detail
+			:settings="collection === 'directus_webhooks'"
+		>
+			<template slot="title">
+				<span
+					v-tooltip="statusName"
+					class="status-indicator"
+					:style="{ backgroundColor: `var(--${statusColor})` }"
+				/>
+			</template>
+		 
+		</v-header>
+
+<br/>
+<br/>
+<br/>
+
 		<div class="overview">
 			<h1>{{ message }}</h1>
 
@@ -353,11 +376,15 @@ export default {
 }
 
 .number-card {
-	width: 232px;
+	width: 180px;
 	height: 100px;
-	background: #ddd5bc;
+background: conic-gradient(#ddd5bc, #ffffff);
+
+ 
+
 	float: left;
-	border-radius: 5px;
+	border-radius: 20px 10px 20px 10px;
+	margin:10px;
 	margin-left: 10px;
 	padding-top: 15px;
 	padding-left: 10px;
@@ -382,7 +409,7 @@ export default {
 }
 
 .number-card .percent-card {
-	font-weight: bolder;
+	font-weight: 300;
 	font-size: 11px;
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
