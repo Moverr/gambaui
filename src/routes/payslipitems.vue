@@ -167,6 +167,11 @@ export default {
 		return {
 			title: this.$helpers.formatTitle(this.collection)
 		};
+	},mounted() {
+		console.log("Mounted me");
+	// this.hasViewOptions();
+	 // this.getUserName();
+		console.log(".................bed...............")
 	},
 	components: {
 		VSearchFilter,
@@ -186,10 +191,14 @@ export default {
 			declinedStatus: null,
 			draftStatus: null,
 			deleteStatus: null,
-			createStatus: null
+			createStatus: null,
+			adminAuthorized:false,
+			firstname:null,
+			lastname:null,
 		};
 	},
 	computed: {
+	
 		...mapState(['currentProjectKey']),
 		activity() {
 			return this.collection === 'directus_activity';
@@ -553,6 +562,25 @@ export default {
 		}
 	},
 	methods: {
+	
+			hasViewOptions(){
+			const userPermissions = this.$store.state.permissions; 
+
+			const currentUser =  this.$store.state.currentUser;
+		   return userPermissions.view === 'full' || currentUser.admin || currentUser.role.name === 'Administrator';
+
+		},
+
+		getUserName(){
+			 console.log("blamer ......................");
+			 console.log( this.$store.state.currentUser);
+		     this.firstname =   this.$store.state.currentUser.firstname;
+			 this.lastname =   this.$store.state.currentUser.lastname;
+		  
+
+		},
+
+
 		fetchPermissions() {
 			console.log('zuma bill');
 			let permissions = this.$store.state.permissions[this.collection];
@@ -702,6 +730,7 @@ export default {
 				});
 		}
 	},
+	
 	beforeRouteEnter(to, from, next) {
 		console.log('Plain and simple');
 		console.log(to);
@@ -723,7 +752,25 @@ export default {
 
 		const id = shortid.generate();
 		store.dispatch('loadingStart', { id });
+ 		
+		const  firstname = "firstname";
+		const  lastname  =  "lastname";
+ 
+ 
 
+ 	const userPermissions = store.state.permissions; 
+
+		const currentUser =  store.state.currentUser;
+
+		console.log("Current User ");
+		console.log(currentUser);
+			console.log("Current User ");
+
+		const addmin =  userPermissions.view === 'full' || currentUser.admin || currentUser.role.name === 'Administrator' || currentUser.role.name === 'Administrator_' || currentUser.role.name === 'Admin HR'    ;
+
+
+
+	 
  
 		return api
 			.getMyListingPreferences(collection)
@@ -731,19 +778,26 @@ export default {
 				store.dispatch('loadingFinished', id);
 				console.log("......");
 				//todo: improve this to make sure u fetch user details ::  
-				preferences.filters = [
-    {
-        "field": "employee",
-        "operator": "contains",
-        "value": "boah"
-    },
-	 {
-        "field": "employee",
-        "operator": "contains",
-        "value": "bright"
-    }
-];	
-				console.log(preferences);
+				if(addmin === true){
+
+				}else{
+					preferences.filters = [
+									{
+										"field": "employee",
+										"operator": "contains",
+										"value":  currentUser.first_name
+									},
+									{
+										"field": "employee",
+										"operator": "contains",
+										"value": currentUser.last_name
+									}
+								];	
+				}
+				
+				
+				
+							console.log(preferences);
 				console.log("......");
 				next(vm => {
 					console.log('preferences');
