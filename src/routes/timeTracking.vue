@@ -6,7 +6,7 @@
 		</div>
 
 		<div>
-			<v-header :icon-link="`/${currentProjectKey}/collections`" />
+			<v-header :icon-link="`/${currentProjectKey}/collections/time_tracking`" />
 			<v-loader area="content" />
 		</div>
 
@@ -35,8 +35,7 @@
 					@click="printPage"
 				/>
 
-				<!-- <v-header-button
-					v-if="isPending"
+				<v-header-button
 					:loading="saving"
 					:label="$t('save')"
 					:options="saveOptions"
@@ -46,164 +45,18 @@
 					hover-color="button-primary-background-color-hover"
 					@click="savePayroll"
 					@input="save"
-				/> -->
+				/>
 			</template>
 		</v-header>
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-			<div class="  drop-down">
-				<label for="">Pay Month</label>
-				<input
-					class="datetime"
-					type="month"
-					name="month"
-					id="month"
-					v-model="selectedMonth"
-					@change="calculateMonthBounds"
-				/>
-
-				<p style="margin-left:10px;">{{ selectedMonth }}</p>
-			</div>
-			&nbsp;
-			<div
-				class=" display_window "
-				style="
-				display: block;
 			 
-				float: left;
-				margin: 10px;
-				margin-top: 15px;
-				font-size: 20px;
-				font-weight: 400;
-	"
-			>
-				<div>From : {{ fromDate }}</div>
-				<div>To : {{ toDate }}</div>
-			</div>
+			 ccc
 		</div>
-		<br />
-		<div class="inline-form " style="margin-top: 10px; margin-left:40px;">
-			<form action="" method="post">
-				<div class="  drop-down">
-					<label for="">Branch</label>
-					<select v-model="selectedBranch" @change="fetchDepartments">
-						<option value="">Select Option</option>
-						<option v-for="branch in branches" :key="branch.id" :value="branch.id">
-							{{ branch.name }}
-						</option>
-					</select>
-				</div>
+		 
+		 
 
-				<div class="  drop-down">
-					<label for="">Deparment</label>
-					<select v-model="selectedDepartment" @change="fetchEmployees">
-						<option value="">Select Option</option>
-						<option
-							v-for="department in departments"
-							:key="department.id"
-							:value="department.id"
-						>
-							{{ department.name }}
-						</option>
-					</select>
-				</div>
-
-				<div class="  drop-down">
-					<label for="">Employee</label>
-					<select v-model="selectedEmployee" @change="displaySelectedEmployee">
-						<option value="">Select Option</option>
-						<option
-							v-for="employee in employees"
-							:key="employee.id"
-							:value="employee.id"
-						>
-							{{ employee.first_name }}
-							{{ employee.last_name }}
-						</option>
-					</select>
-				</div>
-			</form>
-		</div>
-
-		<div
-			v-if="employeeDetail !== '' && employeeDetail !== undefined"
-			class="inline-form "
-			style="margin-top: 10px; margin-left:40px;"
-		>
-			<label for="">
-				<h1>Name:</h1>
-				{{ employeeDetail.first_name }} {{ employeeDetail.last_name }}
-			</label>
-			<label for="">
-				<h1>Job Status:</h1>
-				{{ employeeDetail.job_status }}
-			</label>
-			<label for="">
-				<h1>Gross Amount:</h1>
-				{{ employeeDetail.gross_salary }} {{ employeeDetail.currency }}
-			</label>
-
-			<div v-for="ledger in ledgers" :key="ledger.id">
-				<h1>Payment Ledger</h1>
-				From: {{ ledger.from_date }} To: {{ ledger.to_date }}
-				<h1>Details</h1>
-				<table class="table">
-					<tr>
-						<th>
-							Date
-						</th>
-						<th>
-							Amount
-						</th>
-						<th>
-							Type
-						</th>
-						<th>
-							Reason
-						</th>
-					</tr>
-
-					<tr v-for="detail in ledger.amount_details" :key="detail.id">
-						<td>
-							{{ detail.payment_ledger_detail_id.created_on }}
-						</td>
-						<td>
-							{{ detail.payment_ledger_detail_id.amount }}
-							{{ employeeDetail.currency }}
-						</td>
-						<td>{{ detail.payment_ledger_detail_id.type }}</td>
-
-						<td>{{ detail.payment_ledger_detail_id.details }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-
-		<div
-			v-if="netAmont !== null && netAmont !== undefined"
-			class="inline-form "
-			style="margin-top: 10px; margin-left:40px;"
-		>
-			<table>
-				<tr>
-					<th>Basic</th>
-					<td>{{ employeeDetail.gross_salary }} {{ employeeDetail.currency }}</td>
-				</tr>
-				<tr>
-					<th>Additions</th>
-					<td>{{ earnings_and_deductions }} {{ employeeDetail.currency }}</td>
-				</tr>
-				<tr>
-					<th>Net Amount</th>
-					<td>{{ netAmont }} {{ employeeDetail.currency }}</td>
-				</tr>
-
-				<tr>
-					<th>Payment Status</th>
-					<td>{{ paymentstatus }} {{ approvedDate }}</td>
-				</tr>
-			</table>
-		</div>
+		 
 	</div>
 </template>
 
@@ -229,28 +82,11 @@ export default {
 
 	data() {
 		return {
-			selectedBranch: '',
-			selectedDepartment: '',
-			selectedEmployee: '',
-			employeeDetail: '',
-			branches: [],
-			departments: [],
-			employees: [],
-			ledgers: [],
-			earnings_and_deductions: null,
-			netAmont: null,
-			fromDate: '',
-			toDate: '',
-			paymentstatus: '',
-			approvedDate: '',
-			alreadyapprovedemps: null,
-			msgTitle: '',
-			msgDetail: '',
-			showalert: false
+			 
 		};
 	},
 	computed: {
-	 
+	 	...mapState(['currentProjectKey'])
 	},
 
 	methods: {
@@ -379,5 +215,13 @@ h1 {
 	}
 }
 
-
+.radios {
+	padding-left: 15px;
+}
+.radios label {
+	float: left;
+	width: 100px;
+	font-size: 14px;
+	cursor: pointer;
+}
 </style>
