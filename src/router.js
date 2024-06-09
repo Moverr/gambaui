@@ -19,7 +19,6 @@ import PaySlipItem from './routes/payslipitem.vue';
 import PaySlipItems from './routes/payslipitems.vue';
 import PaySlipItemEdit from './routes/payslipitemedit.vue';
 
-
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
 const ResetPassword = () =>
 	import(/* webpackChunkName: "reset-password" */ './routes/reset-password.vue');
@@ -46,8 +45,8 @@ const SettingsPermissions = () =>
 const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
-	const overview = () =>
-	import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
+const overview = () => import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
+const timetracking = () => import(/* webpackChunkName: "module-extension" */ './routes/timeTracking.vue');
 
 Vue.use(Router);
 
@@ -89,7 +88,6 @@ const router = new Router({
 			component: PaySlipItems
 		},
 
-
 		{
 			path: '/:project/collections/payslip/:primaryKey',
 			props: true,
@@ -120,14 +118,20 @@ const router = new Router({
 			}
 		},
 
-		
-		
 		{
 			path: '/:project/collections/:collection',
 			props: true,
 			component: Items
 		},
-		
+
+		{
+			path: '/:project/collections/time_tracking/:primaryKey',
+			props: true,
+			component: timetracking,
+			meta: {
+				infoSidebarWidth: 'wide'
+			}
+		},
 
 		{
 			path: '/:project/collections/:collection/:primaryKey',
@@ -218,9 +222,6 @@ const router = new Router({
 			component: Settings
 			// alias: '/:project/overview'
 		},
-
-		 
-
 
 		{
 			path: '/:project/collections/directus_users/:primaryKey',
