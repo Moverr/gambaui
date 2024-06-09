@@ -50,55 +50,121 @@
 		</v-header>
 
 		<div class="form " style="margin-top: 10px; margin-left:40px;">
-			 
-             <div> 
-             <h1>TIME TRACKING </h1> <br/>
-             </div>
-			 <div class="  drop-down">
-					<label for="">Employee</label>
-					<select v-model="selectedEmployee" @change="displaySelectedEmployee">
-						<option value="">Select Option</option>
-						<option
-							v-for="employee in employees"
-							:key="employee.id"
-							:value="employee.id"
-						>
-							{{ employee.first_name }}
-							{{ employee.last_name }}
-						</option>
-					</select>
-				</div>
+			<div>
+				<h1>TIME TRACKING</h1>
+				<br />
+			</div>
+			<div>
+				<template>
+					<div style=" margin-left: 5px;display:flex">
+						&nbsp;Status
+						<div class="radios">
+							<label v-if="draftStatus.create === 'full'">
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="draft"
+								/>
+								Draft
+							</label>
+							<label v-if="declinedStatus.create === 'full'">
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="declined"
+								/>
+								Declined
+							</label>
 
+							<label v-if="submitedStatus.create === 'full'">
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="submitted"
+								/>
+								Submitted
+							</label>
 
+							<label v-if="approvedStatus === 'full'">
+								<input
+									type="radio"
+									name="radio"
+									v-model="selectedStatus"
+									value="approved"
+								/>
+								Approved
+							</label>
+						</div>
+					</div>
+				</template>
+				<br />
+			</div>
 
+			<div class="  drop-down">
+				<label for="">Branch</label>
+				<select v-model="selectedBranch" @change="fetchEmployees">
+					<option value="" :selected="true">Select Option</option>
+					<option v-for="branch in branches" :key="branch.id" :value="branch.id">
+						{{ branch.name }}
+					</option>
+				</select>
+			</div>
 
-                 <div class="  drop-down">
-					<label for="">Type</label>
-					<select v-model="selectedEmployee" @change="displaySelectedEmployee">
-						<option value=""  :selected="true">Select Option</option>
-                        <option value="checkin">Check in</option>
-                        <option value="checkout">Check out</option> 
-					</select>
-				</div>
+			<div class="  drop-down">
+				<label for="">Employee</label>
+				<select v-model="selectedEmployee" @change="displaySelectedEmployee">
+					<option value="">Select Option</option>
+					<option v-for="employee in employees" :key="employee.id" :value="employee.id">
+						{{ employee.first_name }}
+						{{ employee.last_name }}
+					</option>
+				</select>
+			</div>
 
+			<div class="  drop-down">
+				<label for="">Type</label>
+				<select v-model="selectedEmployee" @change="displaySelectedEmployee">
+					<option value="" :selected="true">Select Option</option>
+					<option value="checkin">Check in</option>
+					<option value="checkout">Check out</option>
+				</select>
+			</div>
 
+			<div class="  drop-down">
+				<label for="">Date</label>
+				<input
+					data-v-52275a91=""
+					id="rFbG3QlJIF-date"
+					type="date"
+					autocomplete="on"
+					name="rFbG3QlJIF-date"
+					pattern=".*"
+					placeholder=""
+					spellcheck="true"
+					step="1"
+					class="test"
+				/>
+			</div>
 
-
-                 <div class="  drop-down">
-					<label for="">Date</label>
-					 <input data-v-52275a91="" id="rFbG3QlJIF-date" type="date" autocomplete="on" name="rFbG3QlJIF-date" pattern=".*" placeholder="" spellcheck="true" step="1" class="test">
-				</div>
-
-
-                 <div class="  drop-down">
-					<label for="">Time</label>
-					<input data-v-52275a91="" id="" type="time" autocomplete="on" name="" pattern=".*" placeholder="" spellcheck="true" step="1" class="test">
-				</div>
+			<div class="  drop-down">
+				<label for="">Time</label>
+				<input
+					data-v-52275a91=""
+					id=""
+					type="time"
+					autocomplete="on"
+					name=""
+					pattern=".*"
+					placeholder=""
+					spellcheck="true"
+					step="1"
+					class="test"
+				/>
+			</div>
 		</div>
-		 
-		 
-
-		 
 	</div>
 </template>
 
@@ -119,22 +185,186 @@ import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 export default {
 	name: 'timeTracking',
 	mounted() {
-	 
+		this.fetchPermissions();
+		this.fetchBranches();
 	},
 
 	data() {
 		return {
-			 
+            selectedBranch:'',
+			statusColor: '',
+			statusName: '',
+			selectedStatus: null,
+			submitedStatus: null,
+			approvedStatus: null,
+			declinedStatus: null,
+			draftStatus: null,
+			deleteStatus: null,
+			createStatus: null,
+			showalert: false,
+			branches: [],
+			collection: 'time_tracking'
 		};
 	},
 	computed: {
-	 	...mapState(['currentProjectKey'])
+		...mapState(['currentProjectKey']),
+		activity() {
+			return this.collection === 'directus_activity';
+		},
+		breadcrumbIcon() {
+			if (this.collection === 'directus_webhooks') return 'arrow_back';
+			return this.collectionInfo?.icon || 'box';
+		},
+		createLink() {
+			if (this.collection === 'directus_webhooks') {
+				return `/${this.currentProjectKey}/settings/webhooks/+`;
+			}
+
+			if (this.collection.startsWith('directus_')) {
+				return `/${this.currentProjectKey}/${this.collection.substr(9)}/+`;
+			}
+
+			return `/${this.currentProjectKey}/collections/${this.collection}/+`;
+		},
+		breadcrumb() {
+			if (this.collection === 'directus_users') {
+				return [
+					{
+						name: this.$t('user_directory'),
+						path: `/${this.currentProjectKey}/users`
+					}
+				];
+			}
+
+			if (this.collection === 'directus_webhooks') {
+				return [
+					{
+						name: this.$t('settings'),
+						path: `/${this.currentProjectKey}/settings`
+					},
+					{
+						name: this.$t('settings_webhooks'),
+						path: `/${this.currentProjectKey}/settings/webhooks`
+					}
+				];
+			}
+
+			if (this.collection === 'directus_files') {
+				return [
+					{
+						name: this.$t('file_library'),
+						path: `/${this.currentProjectKey}/files`
+					}
+				];
+			}
+
+			if (this.collection.startsWith('directus_')) {
+				return [
+					{
+						name: this.$helpers.formatTitle(this.collection.substr(9)),
+						path: `/${this.currentProjectKey}/${this.collection.substring(9)}`
+					}
+				];
+			} else {
+				return [
+					{
+						name: this.$tc('collection', 2),
+						path: `/${this.currentProjectKey}/collections`
+					},
+					{
+						name: this.$helpers.formatCollection(this.collection),
+						path: `/${this.currentProjectKey}/collections/${this.collection}`
+					}
+				];
+			}
+		}
 	},
 
 	methods: {
-		 
-		  
-	 
+		async fetchBranches() {
+			console.log('Branches');
+			console.log(this.$api);
+			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
+
+			this.$api
+				.getItems('branches', {
+					fields: '*.*'
+				})
+
+				.then(res => res.data)
+				.then(data => {
+					console.log(data);
+
+					this.branches = data;
+					this.showalert = false;
+				});
+		},
+
+		async fetchEmployees() {
+			try {
+				this.alreadyapprovedemps = null;
+				this.showalert = true;
+				this.msgTitle = 'Information';
+				this.msgDetail = 'Processing';
+
+                const branch = this.selectedBranch;
+
+				if (branch === '') return;
+
+				console.log('Employees');
+
+				let filter;
+
+				filter = {
+					'department.branch.id': { eq: branch },
+					start_date: { lt: this.fromDate },
+					status: { eq: 'active' }
+				};
+
+				const res = await this.$api.getItems('employees', {
+					fields: '*.*',
+					filter
+				});
+
+				const data = res.data;
+
+                
+                console.log("..::..employeees .......................... ");
+				console.log(data);
+                console.log("..::..employeees .......................... ");
+
+			  
+ 
+				this.employees = data;
+ 
+			} catch (error) {
+				console.error('Error fetching employees:', error);
+			} finally {
+				this.showalert = false;
+			}
+		},
+
+		fetchPermissions() {
+			console.log('zuma bill');
+			let permissions = this.$store.state.permissions[this.collection];
+			console.log('Permissions off payrrolls');
+			console.log(permissions);
+
+			//const {approved,submitted, declined} = permissions.statuses.approved.create;
+			const { approved, submitted, declined, draft, deleted } = permissions.statuses;
+
+			this.approvedStatus = approved;
+			this.submitedStatus = submitted;
+			this.declinedStatus = declined;
+			this.draftStatus = draft;
+			this.deleteStatus = deleted;
+			this.createStatus = permissions.$create;
+		},
+		isSaveButtonEnabled() {
+			return false;
+		}
 	}
 };
 </script>
@@ -154,10 +384,11 @@ export default {
 }
 
 .form .drop-down {
-	 
 }
 
-.form select,.form  input[type="date"],.form  input[type="time"] {
+.form select,
+.form input[type='date'],
+.form input[type='time'] {
 	padding: 10px;
 	font-size: 14px;
 	width: 80% !important;
@@ -215,9 +446,6 @@ h1 {
 	font-weight: 700;
 	word-spacing: 1%;
 }
-
-
-
 
 .lightbox {
 	position: fixed;
