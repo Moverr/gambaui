@@ -18,7 +18,10 @@ import PayrollItemEdit from './routes/payrollitemedit.vue';
 import PaySlipItem from './routes/payslipitem.vue';
 import PaySlipItems from './routes/payslipitems.vue';
 import PaySlipItemEdit from './routes/payslipitemedit.vue';
+import TimeTracking from './routes/timeTracking.vue';
+import TimeTrackings from './routes/timeTrackings.vue';
 
+ 
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
 const ResetPassword = () =>
 	import(/* webpackChunkName: "reset-password" */ './routes/reset-password.vue');
@@ -46,7 +49,6 @@ const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
 const overview = () => import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
-const timetracking = () => import(/* webpackChunkName: "module-extension" */ './routes/timeTracking.vue');
 
 Vue.use(Router);
 
@@ -117,6 +119,23 @@ const router = new Router({
 				infoSidebarWidth: 'wide'
 			}
 		},
+		{
+			path: '/:project/collections/time_tracking',
+			props: true,
+			component: TimeTrackings
+			 
+		},
+
+		
+		{
+			path: '/:project/collections/time_tracking/create',
+			props: true,
+			component: TimeTracking
+			 
+		},
+
+
+
 
 		{
 			path: '/:project/collections/:collection',
@@ -124,15 +143,7 @@ const router = new Router({
 			component: Items
 		},
 
-		{
-			path: '/:project/collections/time_tracking/:primaryKey',
-			props: true,
-			component: timetracking,
-			meta: {
-				infoSidebarWidth: 'wide'
-			}
-		},
-
+		
 		{
 			path: '/:project/collections/:collection/:primaryKey',
 			props: true,

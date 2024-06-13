@@ -174,7 +174,7 @@ import { isEqual, isEmpty, isNil, find, findIndex, keyBy } from 'lodash';
 import api from '../api';
 
 export default {
-	name: 'Items',
+	name: 'TimeTrackings',
 	metaInfo() {
 		return {
 			title: this.$helpers.formatTitle(this.collection)
@@ -205,15 +205,9 @@ export default {
 			return this.collectionInfo?.icon || 'box';
 		},
 		createLink() {
-			if (this.collection === 'directus_webhooks') {
-				return `/${this.currentProjectKey}/settings/webhooks/+`;
-			}
+			 
 
-			if (this.collection.startsWith('directus_')) {
-				return `/${this.currentProjectKey}/${this.collection.substr(9)}/+`;
-			}
-
-			return `/${this.currentProjectKey}/collections/${this.collection}/+`;
+			return `/${this.currentProjectKey}/collections/${this.collection}/create`;
 		},
 		breadcrumb() {
 			if (this.collection === 'directus_users') {
@@ -700,7 +694,11 @@ export default {
 		console.log("Wonders");
         console.log(to);
         console.log(to.params);
+		
+   to.params.collection = 'time_tracking'
+		 
 		let { collection } = to.params;
+
 
 		console.log("Collections");
 		console.log(collection);
@@ -802,7 +800,12 @@ export default {
 			});
 	},
 	beforeRouteUpdate(to, from, next) {
-		const { collection } = to.params;
+
+		
+   to.params.collection = 'time_tracking'
+		let { collection } = to.params;
+
+	 
 
 		this.preferences = null;
 		this.selection = [];

@@ -43,7 +43,7 @@
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
 					hover-color="button-primary-background-color-hover"
-					@click="savePayroll"
+					@click="saveTimeTracker"
 					@input="save"
 				/>
 			</template>
@@ -68,15 +68,6 @@
 								/>
 								Draft
 							</label>
-							<label v-if="declinedStatus.create === 'full'">
-								<input
-									type="radio"
-									name="radio"
-									v-model="selectedStatus"
-									value="declined"
-								/>
-								Declined
-							</label>
 
 							<label v-if="submitedStatus.create === 'full'">
 								<input
@@ -88,7 +79,7 @@
 								Submitted
 							</label>
 
-							<label v-if="approvedStatus === 'full'">
+							<label>
 								<input
 									type="radio"
 									name="radio"
@@ -115,8 +106,8 @@
 
 			<div class="  drop-down">
 				<label for="">Employee</label>
-				<select v-model="selectedEmployee" @change="displaySelectedEmployee">
-					<option value="">Select Option</option>
+				<select v-model="selectedEmployee" @change="handleEmployee">
+					<option value="" :selected="true">Select Option</option>
 					<option v-for="employee in employees" :key="employee.id" :value="employee.id">
 						{{ employee.first_name }}
 						{{ employee.last_name }}
@@ -126,7 +117,7 @@
 
 			<div class="  drop-down">
 				<label for="">Type</label>
-				<select v-model="selectedEmployee" @change="displaySelectedEmployee">
+				<select v-model="checkinType">
 					<option value="" :selected="true">Select Option</option>
 					<option value="checkin">Check in</option>
 					<option value="checkout">Check out</option>
@@ -146,6 +137,7 @@
 					spellcheck="true"
 					step="1"
 					class="test"
+					v-model="ttdate"
 				/>
 			</div>
 
@@ -162,6 +154,7 @@
 					spellcheck="true"
 					step="1"
 					class="test"
+					v-model="tttime"
 				/>
 			</div>
 		</div>
@@ -183,15 +176,17 @@ import { mapState } from 'vuex';
 import { mapValues, findIndex, find, merge, forEach, keyBy } from 'lodash';
 
 export default {
-	name: 'timeTracking',
+	name: 'TimeTracking',
 	mounted() {
 		this.fetchPermissions();
 		this.fetchBranches();
+		this.getCurrentMonth();
+		this.getCurrentDateTime();
 	},
 
 	data() {
 		return {
-            selectedBranch:'',
+			selectedBranch: '',
 			statusColor: '',
 			statusName: '',
 			selectedStatus: null,
@@ -203,11 +198,36 @@ export default {
 			createStatus: null,
 			showalert: false,
 			branches: [],
-			collection: 'time_tracking'
+			collection: 'time_tracking',
+			employees: [],
+			selectedEmployee: '',
+			checkinType: '',
+			ttdate: this.getCurrentMonth(),
+			tttime: null,
+			saving: false,
+
+			notFound: false,
+			error: false,
+
+			confirmRemove: false,
+			confirmRemoveLoading: false,
+			confirmBatchSave: false,
+
+			confirmNavigation: false
 		};
 	},
 	computed: {
 		...mapState(['currentProjectKey']),
+		newItem() {
+			return this.primaryKey === '+';
+		},
+		batch() {
+			return false;
+			// this.primaryKey.includes(',');
+		},
+		activityDetail() {
+			return this.collection === 'directus_activity';
+		},
 		activity() {
 			return this.collection === 'directus_activity';
 		},
@@ -281,6 +301,62 @@ export default {
 	},
 
 	methods: {
+		printPage() {},
+		getCurrentMonth() {
+			var today = new Date();
+			const year = today.getFullYear();
+			const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+			const day = String(today.getDate()).padStart(2, '0');
+			this.ttdate = `${month}/${day}/${year}`;
+		},
+		getCurrentDateTime() {
+			var today = new Date();
+			const year = today.getFullYear();
+			const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+			const day = String(today.getDate()).padStart(2, '0');
+
+			let hours = today.getHours();
+			const minutes = String(today.getMinutes()).padStart(2, '0');
+			const seconds = String(today.getSeconds()).padStart(2, '0');
+			const ampm = hours >= 12 ? 'PM' : 'AM';
+
+			hours = hours % 12;
+			hours = hours ? hours : 12; // The hour '0' should be '12'
+			const strHours = String(hours).padStart(2, '0');
+
+			this.tttime = `${day}/${month}/${year} ${strHours}:${minutes}:${seconds} ${ampm}`;
+		},
+
+		handleEmployee() {},
+		async saveTimeTracker() {
+			if (
+				this.tttime === null ||
+				this.ttdate === null ||
+				this.selectedEmployee === null ||
+				this.selectedStatus === null
+			) {
+				return alert('Enter all fields');
+			}
+
+			this.saving = true;
+
+			const body = {
+				time: this.tttime,
+				date: this.ttdate,
+				type: this.checkinType,
+				employee: this.selectedEmployee,
+				status: this.selectedStatus
+			};
+
+			this.saving = true;
+			this.showalert = true;
+			this.msgTitle = 'Information';
+			this.msgDetail = 'Processing';
+
+			const bd = await this.$api.createItem('time_tracking', body);
+			this.$router.push('/hrsystem/collections/time_tracking');
+			//	{"status":"submitted","employee":73,"type":"checkin","date":"2024-06-13","time":"14:39:19"}
+		},
 		async fetchBranches() {
 			console.log('Branches');
 			console.log(this.$api);
@@ -309,7 +385,7 @@ export default {
 				this.msgTitle = 'Information';
 				this.msgDetail = 'Processing';
 
-                const branch = this.selectedBranch;
+				const branch = this.selectedBranch;
 
 				if (branch === '') return;
 
@@ -319,7 +395,7 @@ export default {
 
 				filter = {
 					'department.branch.id': { eq: branch },
-					start_date: { lt: this.fromDate },
+
 					status: { eq: 'active' }
 				};
 
@@ -330,15 +406,11 @@ export default {
 
 				const data = res.data;
 
-                
-                console.log("..::..employeees .......................... ");
+				console.log('..::..employeees .......................... ');
 				console.log(data);
-                console.log("..::..employeees .......................... ");
+				console.log('..::..employeees .......................... ');
 
-			  
- 
 				this.employees = data;
- 
 			} catch (error) {
 				console.error('Error fetching employees:', error);
 			} finally {
