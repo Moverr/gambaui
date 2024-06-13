@@ -20,6 +20,7 @@ import PaySlipItems from './routes/payslipitems.vue';
 import PaySlipItemEdit from './routes/payslipitemedit.vue';
 import TimeTracking from './routes/timeTracking.vue';
 import TimeTrackings from './routes/timeTrackings.vue';
+import Overvew  from './routes/overview.vue';
 
  
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
@@ -48,7 +49,6 @@ const SettingsPermissions = () =>
 const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
-const overview = () => import(/* webpackChunkName: "module-extension" */ './routes/overview.vue');
 
 Vue.use(Router);
 
@@ -67,7 +67,7 @@ const router = new Router({
 	routes: [
 		{
 			path: '/:project/overview',
-			component: overview
+			component: Overvew
 		},
 		// {
 		// 	path: '/:project/collections/payroll',
