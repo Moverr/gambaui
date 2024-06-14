@@ -1,7 +1,6 @@
 <template>
 	<div class="dashboard">
-
-			<v-header
+		<v-header
 			:breadcrumb="breadcrumb"
 			:info-toggle="!newItem && !batch && !activityDetail"
 			:icon-link="iconLink"
@@ -16,12 +15,11 @@
 					:style="{ backgroundColor: `var(--${statusColor})` }"
 				/>
 			</template>
-		 
 		</v-header>
 
-<br/>
-<br/>
-<br/>
+		<br />
+		<br />
+		<br />
 
 		<div class="overview">
 			<h1>{{ message }}</h1>
@@ -72,12 +70,14 @@ export default {
 	name: 'Overvew',
 	mounted() {
 		// this.circleChart();
-		//this.barChart();
+
 		//this.lineGraph();
 		this.fetchActiveEmployees();
 		this.fetchLeftEmployees();
-        this.fetchBranches();
-        this.fetchDepartments();
+		this.fetchBranches();
+		this.fetchDepartments();
+		this.fetchTImeTracking();
+		this.fetchAverageTimeTracking();
 	},
 
 	data() {
@@ -90,25 +90,25 @@ export default {
 				{ label: 'Category C', value: 50 }
 			],
 			attendanceData: [
-				{ name: 'Mon', count: null },
-				{ name: 'Tue', count: null },
-				{ name: 'Wed', count: null },
-				{ name: 'Thur', count: null },
-				{ name: 'Fri', count: null },
-				{ name: 'Sat', count: null },
-				{ name: 'Sun', count: null }
+				{ name: 'Mon', count: 0 },
+				{ name: 'Tue', count: 0 },
+				{ name: 'Wed', count: 0 },
+				{ name: 'Thur', count: 0 },
+				{ name: 'Fri', count: 0 },
+				{ name: 'Sat', count: 0 },
+				{ name: 'Sun', count: 0 }
 			],
 			lineData: [
-				{ date: '2024-03-01', value: null },
-				{ date: '2024-03-02', value: null },
-				{ date: '2024-03-03', value: null },
-				{ date: '2024-03-04', value: null },
-				{ date: '2024-03-05', value: null },
-				{ date: '2024-03-06', value: null },
-				{ date: '2024-03-07', value: null },
-				{ date: '2024-03-08', value: null },
-				{ date: '2024-03-09', value: null },
-				{ date: '2024-03-10', value: null }
+				{ date: '2024-03-01', value: 1 },
+				{ date: '2024-03-02', value: 1 },
+				{ date: '2024-03-03', value: 1 },
+				{ date: '2024-03-04', value: 1 },
+				{ date: '2024-03-05', value: 1 },
+				{ date: '2024-03-06', value: 1 },
+				{ date: '2024-03-07', value: 1 },
+				{ date: '2024-03-08', value: 1 },
+				{ date: '2024-03-09', value: 1 },
+				{ date: '2024-03-10', value: 1 }
 			],
 			total_head_count: 0,
 			total_left_count: 0,
@@ -130,6 +130,91 @@ export default {
 			});
 
 			return employeesCreatedThisMonth.length;
+		},
+
+		fetchAverageTimeTracking() {
+			const limit = 1000;
+			const filter = {};
+
+			// Initialize lineData with dates for the next 7 days
+			const lineData = [];
+			const today = new Date();
+
+			for (let i = 0; i < 7; i++) {
+				const date = new Date(today);
+				date.setDate(today.getDate() + i);
+				const formattedDate = date.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
+				lineData.push({ date: formattedDate, value: 0 });
+			}
+
+			this.$api
+				.getItems('time_tracking', {
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
+					filter,
+					limit
+				})
+				.then(res => {
+					console.log(res);
+
+					// Process each entry from the API response
+					res.data.forEach(entry => {
+						const date = entry.date;
+						const dayEntry = lineData.find(item => item.date === date);
+						if (dayEntry) {
+							dayEntry.value++;
+						}
+					});
+
+					this.lineData = lineData;
+					this.lineGraph();
+				})
+				.catch(error => {
+					console.error('Error fetching time tracking data:', error);
+				});
+		},
+		fetchTImeTracking() {
+			const limit = 1000;
+			const filter = {};
+
+			this.$api
+				.getItems('time_tracking', {
+					meta: 'total_count,result_count,filter_count',
+					sort: '-status',
+					filter,
+					limit
+				})
+				.then(res => {
+					console.log(res);
+
+					const dayOfWeekCount = [
+						{ name: 'Mon', count: 0 },
+						{ name: 'Tue', count: 0 },
+						{ name: 'Wed', count: 0 },
+						{ name: 'Thu', count: 0 },
+						{ name: 'Fri', count: 0 },
+						{ name: 'Sat', count: 0 },
+						{ name: 'Sun', count: 0 }
+					];
+
+					res.data.forEach(entry => {
+						const date = new Date(entry.date);
+						const dayOfWeek = date.toLocaleString('en-US', { weekday: 'short' });
+						const day = dayOfWeekCount.find(d => d.name === dayOfWeek);
+						if (day) {
+							day.count++;
+						}
+					});
+
+					console.log('........................');
+					console.log(dayOfWeekCount);
+					console.log('........................');
+
+					this.attendanceData = dayOfWeekCount;
+					this.barChart();
+
+					//todo: work on the neuro
+				});
 		},
 
 		fetchBranches() {
@@ -378,13 +463,11 @@ export default {
 .number-card {
 	width: 180px;
 	height: 100px;
-background: conic-gradient(#ddd5bc, #ffffff);
-
- 
+	background: conic-gradient(#ddd5bc, #ffffff);
 
 	float: left;
 	border-radius: 20px 10px 20px 10px;
-	margin:10px;
+	margin: 10px;
 	margin-left: 10px;
 	padding-top: 15px;
 	padding-left: 10px;
