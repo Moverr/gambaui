@@ -139,10 +139,14 @@ export default {
 			// Initialize lineData with dates for the next 7 days
 			const lineData = [];
 			const today = new Date();
+			const dayOfWeek = today.getDay(); // Get current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+			const mondayOffset = (dayOfWeek === 0 ? 6 : dayOfWeek - 1); // Offset to get to Monday
+
+
 
 			for (let i = 0; i < 7; i++) {
 				const date = new Date(today);
-				date.setDate(today.getDate() + i);
+				date.setDate(today.getDate() + i - mondayOffset);
 				const formattedDate = date.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
 				lineData.push({ date: formattedDate, value: 0 });
 			}
