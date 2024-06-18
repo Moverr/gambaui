@@ -154,7 +154,7 @@ export default {
 			this.$api
 				.getItems('time_tracking', {
 					meta: 'total_count,result_count,filter_count',
-					sort: '-status',
+					sort: '-created_on',
 					filter,
 					limit
 				})
@@ -164,9 +164,16 @@ export default {
 					// Process each entry from the API response
 					res.data.forEach(entry => {
 						const date = entry.date;
+						const entryTime = entry.time;
+
+//todo: to be imple implemented later  .. 
+
 						const dayEntry = lineData.find(item => item.date === date);
+						console.log("Day entry  .......");
+console.log(dayEntry);
+						
 						if (dayEntry) {
-							dayEntry.value++;
+							dayEntry.value = 12;
 						}
 					});
 
@@ -201,7 +208,11 @@ export default {
 						{ name: 'Sun', count: 0 }
 					];
 
-					res.data.forEach(entry => {
+
+ 
+
+					res.data.forEach(entry => { 
+						 
 						const date = new Date(entry.date);
 						const dayOfWeek = date.toLocaleString('en-US', { weekday: 'short' });
 						const day = dayOfWeekCount.find(d => d.name === dayOfWeek);

@@ -59,7 +59,7 @@
 					<div style=" margin-left: 5px;display:flex">
 						&nbsp;Status
 						<div class="radios">
-							<label v-if="draftStatus.create === 'full'">
+							<label >
 								<input
 									type="radio"
 									name="radio"
@@ -69,7 +69,7 @@
 								Draft
 							</label>
 
-							<label v-if="submitedStatus.create === 'full'">
+							<label  >
 								<input
 									type="radio"
 									name="radio"
@@ -202,7 +202,7 @@ export default {
 			employees: [],
 			selectedEmployee: '',
 			checkinType: '',
-			ttdate: this.getCurrentMonth(),
+			ttdate: null,
 			tttime: null,
 			saving: false,
 
@@ -354,6 +354,7 @@ export default {
 			this.msgDetail = 'Processing';
 
 			const bd = await this.$api.createItem('time_tracking', body);
+			console.log(bd);
 			this.$router.push('/hrsystem/collections/time_tracking');
 			//	{"status":"submitted","employee":73,"type":"checkin","date":"2024-06-13","time":"14:39:19"}
 		},
