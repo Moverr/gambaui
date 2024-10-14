@@ -1,7 +1,6 @@
 <template>
 	<v-not-found v-if="notFound" />
 	<div v-else class="route-item-listing">
-     
 		<v-header
 			info-toggle
 			:item-detail="false"
@@ -42,42 +41,35 @@
 				@clear-filters="clearFilters"
 			/>
 			<template slot="buttons">
-			 
 				<v-header-button
 					v-if="addButton && !activity"
 					key="printPage"
 					icon="print"
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
-				  :label="$t('  Print')"
-                    @click="printPage"
-					 
+					:label="$t('  Print')"
+					@click="printPage"
 				/>
 
+				<v-header-button
+					v-if="addButton && !activity"
+					key="createPayRoll"
+					icon="recent_actors"
+					icon-color="button-primary-text-color"
+					background-color="button-primary-background-color"
+					:label="$t('  Payroll')"
+					:to="createPayroll"
+				/>
 
-                <v-header-button
-                v-if="addButton && !activity"
-                key="createPayRoll"
-                icon="recent_actors"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="$t('  Payroll')"
-                :to="createPayroll"
-            />
-			
-   <v-header-button
-                v-if="addButton && !activity"
-                key="createPaySlip"
-                icon="receipt"
-                icon-color="button-primary-text-color"
-                background-color="button-primary-background-color"
-                :label="$t('  Payslip')"
-                :to="createPaySlip"
-            />
-
-
-
-
+				<v-header-button
+					v-if="addButton && !activity"
+					key="createPaySlip"
+					icon="receipt"
+					icon-color="button-primary-text-color"
+					background-color="button-primary-background-color"
+					:label="$t('  Payslip')"
+					:to="createPaySlip"
+				/>
 			</template>
 		</v-header>
 
@@ -170,18 +162,18 @@ import { isEqual, isEmpty, isNil, find, findIndex, keyBy } from 'lodash';
 import api from '../api';
 
 export default {
-    name: 'PayrollItems',
-    metaInfo() {
+	name: 'PayrollItems',
+	metaInfo() {
 		return {
 			title: this.$helpers.formatTitle(this.collection)
 		};
 	},
-    components: {
+	components: {
 		VSearchFilter,
 		VNotFound,
 		VCreateBookmark
 	},
-    data() {
+	data() {
 		return {
 			selection: [],
 			meta: null,
@@ -191,7 +183,7 @@ export default {
 			notFound: false
 		};
 	},
-    computed: {
+	computed: {
 		...mapState(['currentProjectKey']),
 		activity() {
 			return this.collection === 'directus_activity';
@@ -200,16 +192,14 @@ export default {
 			if (this.collection === 'directus_webhooks') return 'arrow_back';
 			return this.collectionInfo?.icon || 'box';
 		},
-		createPayroll() { 
+		createPayroll() {
 			return `/${this.currentProjectKey}/collections/payrolls/create`;
 		},
 
-		createPaySlip() { 
+		createPaySlip() {
 			return `/${this.currentProjectKey}/collections/payrolls/createslip`;
 		},
 
-
-		
 		breadcrumb() {
 			if (this.collection === 'directus_users') {
 				return [
@@ -547,7 +537,7 @@ export default {
 			return enabled;
 		}
 	},
-    watch: {
+	watch: {
 		$route() {
 			if (this.$route.query.b) {
 				this.$router.replace({
@@ -556,15 +546,14 @@ export default {
 			}
 		}
 	},
-    methods: {
-        
+	methods: {
 		keyBy: keyBy,
 		setMeta(meta) {
 			this.meta = meta;
 		},
-        printPage() {
-      window.print();
-    },
+		printPage() {
+			window.print();
+		},
 		editCollection() {
 			if (!this.$store.state.currentUser.admin) return;
 			this.$router.push(`/${this.currentProjectKey}/settings/collections/${this.collection}`);
@@ -690,11 +679,11 @@ export default {
 				});
 		}
 	},
-    beforeRouteEnter(to, from, next) {
-        console.log("Plain and simple");
-        console.log(to);
-        console.log(to.params);
-        to.params.collection = 'payrolls'
+	beforeRouteEnter(to, from, next) {
+		console.log('Plain and simple');
+		console.log(to);
+		console.log(to.params);
+		to.params.collection = 'payrolls';
 		let { collection } = to.params;
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
@@ -721,8 +710,8 @@ export default {
 				});
 			})
 			.catch(error => {
-                console.log("Plain and simple");
-                console.log(error);
+				console.log('Plain and simple');
+				console.log(error);
 				store.dispatch('loadingFinished', id);
 				this.$events.emit('error', {
 					notify: this.$t('something_went_wrong_body'),
@@ -730,8 +719,8 @@ export default {
 				});
 			});
 	},
-    beforeRouteUpdate(to, from, next) {
-        to.params.collection = 'payrolls'
+	beforeRouteUpdate(to, from, next) {
+		to.params.collection = 'payrolls';
 		const { collection } = to.params;
 
 		this.preferences = null;
@@ -768,12 +757,8 @@ export default {
 				});
 			});
 	}
-
-}
-
+};
 </script>
-
-
 
 <style lang="scss" scoped>
 .bookmark,
@@ -829,5 +814,3 @@ export default {
 	margin-bottom: 64px;
 }
 </style>
-
-

@@ -99,7 +99,7 @@ export default {
 		},
 		customCollections() {
 			const collectionListing = this.currentUser.role.collection_listing;
-			console.log(collectionListing)
+			console.log(collectionListing);
 			const hasCustom = Array.isArray(collectionListing) && collectionListing.length > 0;
 
 			if (hasCustom === false) return null;
@@ -112,48 +112,41 @@ export default {
 							c => c.collection === collection
 						);
 
-						if	(collection === "salary") 
-
-						 return {
-							link: `/${this.currentProjectKey}/payroll`,
-							name: "payroll",
-							icon: collectionInfo ? collectionInfo.icon : null
-						}
-
+						if (collection === 'salary')
+							return {
+								link: `/${this.currentProjectKey}/payroll`,
+								name: 'payroll',
+								icon: collectionInfo ? collectionInfo.icon : null
+							};
 						else
-
-						 return {
-							link: `/${this.currentProjectKey}/collections/${collection}`,
-							name: this.$helpers.formatCollection(collection),
-							icon: collectionInfo ? collectionInfo.icon : null
-						};
+							return {
+								link: `/${this.currentProjectKey}/collections/${collection}`,
+								name: this.$helpers.formatCollection(collection),
+								icon: collectionInfo ? collectionInfo.icon : null
+							};
 					})
 				};
 			});
 		},
 		defaultCollections() {
-			
-			let collect = 
-			this.collections
-				.map(({ collection, icon }) => (
-				// 	(collection === "salary" || collection === "payroll" ) ?
-				// {
-				// 	link: `/${this.currentProjectKey}/payroll`,
-				// 	name: "payroll ",
-				// 	icon
-				// } :
-				{
-					link: `/${this.currentProjectKey}/collections/${collection}`,
-					name: this.$helpers.formatCollection(collection),
-					icon
-				}
-				
-				))
-				 
+			let collect = this.collections
+				.map(({ collection, icon }) =>
+					// 	(collection === "salary" || collection === "payroll" ) ?
+					// {
+					// 	link: `/${this.currentProjectKey}/payroll`,
+					// 	name: "payroll ",
+					// 	icon
+					// } :
+					({
+						link: `/${this.currentProjectKey}/collections/${collection}`,
+						name: this.$helpers.formatCollection(collection),
+						icon
+					})
+				)
+
 				.sort((a, b) => (a.name > b.name ? 1 : -1));
 
-
-				return collect;
+			return collect;
 		}
 	},
 	methods: {
@@ -271,23 +264,18 @@ aside {
 		padding-left: var(--nav-sidebar-width);
 	}
 }
-
- 
 </style>
 
 <style>
-[type="date"] {
-	background:#fff url(https://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/calendar_2.png)  97% 50% no-repeat ;
-  }
-  [type="date"]::-webkit-inner-spin-button {
+[type='date'] {
+	background: #fff
+		url(https://cdn1.iconfinder.com/data/icons/cc_mono_icon_set/blacks/16x16/calendar_2.png) 97%
+		50% no-repeat;
+}
+[type='date']::-webkit-inner-spin-button {
 	display: none;
-  }
-  [type="date"]::-webkit-calendar-picker-indicator {
+}
+[type='date']::-webkit-calendar-picker-indicator {
 	opacity: 0;
-  }
-  
-  
-
-  
+}
 </style>
-

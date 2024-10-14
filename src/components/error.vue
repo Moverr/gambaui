@@ -1,7 +1,6 @@
 <template>
 	<transition name="error">
 		<div class="v-error">
-			 
 			<div class="circle" :style="{ borderColor: 'var(--' + color + ')' }">
 				<v-icon class="icon" :class="icon" :name="icon" x-large :color="`--${color}`" />
 			</div>
@@ -57,7 +56,7 @@ export default {
 	flex-direction: column;
 	margin: 100px 0;
 	width: 300px;
-	height: 300px; 
+	height: 300px;
 	border-radius: 3rem;
 
 	.circle {

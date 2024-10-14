@@ -70,8 +70,7 @@
 					icon-color="button-primary-text-color"
 					background-color="button-primary-background-color"
 					:label="Print"
-                    @click="printPage"
-					 
+					@click="printPage"
 				/>
 				<v-header-button
 					v-if="addButton && !activity"
@@ -567,8 +566,8 @@ export default {
 			this.meta = meta;
 		},
 		printPage() {
-      window.print();
-    },
+			window.print();
+		},
 		editCollection() {
 			if (!this.$store.state.currentUser.admin) return;
 			this.$router.push(`/${this.currentProjectKey}/settings/collections/${this.collection}`);
@@ -695,17 +694,22 @@ export default {
 		}
 	},
 	beforeRouteEnter(to, from, next) {
-		
 		// collection.project = "payroll"
-		console.log("Wonders");
-        console.log(to);
-        console.log(to.params);
+		console.log('Trusting Wonders ');
+		console.log(to);
+		//  console.log(to.query);
+
+		// 	 to.query = {
+		//     'first_name': "seee",
+		//     'last_name': "seee"
+		// }
+
+		console.log(to.params);
 		let { collection } = to.params;
 
-		console.log("Collections");
+		console.log('Collections');
 		console.log(collection);
-			console.log("Collections");
-
+		console.log('Collections');
 
 		if (to.path.endsWith('webhooks')) collection = 'directus_webhooks';
 
@@ -722,72 +726,59 @@ export default {
 		const id = shortid.generate();
 		store.dispatch('loadingStart', { id });
 
+		const userPermissions = store.state.permissions;
 
-			const userPermissions = store.state.permissions; 
+		const currentUser = store.state.currentUser;
 
-		const currentUser =  store.state.currentUser;
-
-		console.log("Current User ");
+		console.log('Current User ');
 		console.log(currentUser);
-			console.log("Current User ");
+		console.log('Current User ');
 
-	const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
+		const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
 
-	const addmin = userPermissions.view === 'full' || currentUser.admin || adminRoles.includes(currentUser.role.name);
-
-
-	 
-
-
+		const addmin =
+			userPermissions.view === 'full' ||
+			currentUser.admin ||
+			adminRoles.includes(currentUser.role.name);
 
 		return api
 			.getMyListingPreferences(collection)
 			.then(preferences => {
-
-
 				store.dispatch('loadingFinished', id);
 
-
-					//todo: improve this to make sure u fetch user details ::  
-				if(addmin === true){
-
-				}else{
-
-
-
-					if(collection === "payment_ledger"){
-							preferences.filters = [
-									{
-										"field": "employees",
-										"operator": "contains",
-										"value":  currentUser.first_name
-									},
-									{
-										"field": "employees",
-										"operator": "contains",
-										"value": currentUser.last_name
-									}
-								];	
+				//todo: improve this to make sure u fetch user details ::
+				if (addmin === true) {
+				} else {
+					if (collection === 'payment_ledger') {
+						preferences.filters = [
+							{
+								field: 'employees',
+								operator: 'contains',
+								value: currentUser.first_name
+							},
+							{
+								field: 'employees',
+								operator: 'contains',
+								value: currentUser.last_name
+							}
+						];
 					}
 
-					if(collection === "employees"){
-							preferences.filters = [
-									{
-										"field": "first_name",
-										"operator": "eq",
-										"value":  currentUser.first_name
-									},
-									{
-										"field": "last_name",
-										"operator": "eq",
-										"value": currentUser.last_name
-									}
-								];	
+					if (collection === 'employees') {
+						preferences.filters = [
+							{
+								field: 'system_account',
+								operator: 'eq',
+								value: currentUser.id
+							}
+							// {
+							// 	"field": "last_name",
+							// 	"operator": "eq",
+							// 	"value": currentUser.last_name
+							// }
+						];
 					}
-					
 				}
-				
-
 
 				next(vm => {
 					vm.$data.preferences = preferences;
@@ -823,71 +814,59 @@ export default {
 		const id = this.$helpers.shortid.generate();
 		this.$store.dispatch('loadingStart', { id });
 
+		const userPermissions = store.state.permissions;
 
-			const userPermissions = store.state.permissions; 
+		const currentUser = store.state.currentUser;
 
-		const currentUser =  store.state.currentUser;
-
-		console.log("Current User ");
+		console.log('Current User ');
 		console.log(currentUser);
-			console.log("Current User ");
+		console.log('Current User ');
 
-	const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
+		const adminRoles = ['Administrator', 'Administrator_', 'Admin HR'];
 
-	const addmin = userPermissions.view === 'full' || currentUser.admin || adminRoles.includes(currentUser.role.name);
-
-
-	 
-
-
-
+		const addmin =
+			userPermissions.view === 'full' ||
+			currentUser.admin ||
+			adminRoles.includes(currentUser.role.name);
 
 		return api
 			.getMyListingPreferences(collection)
 			.then(preferences => {
 				this.$store.dispatch('loadingFinished', id);
 
-
-				
-					//todo: improve this to make sure u fetch user details ::  
-				if(addmin === true){
-
-				}else{
-
-
-
-					if(collection === "payment_ledger"){
-							preferences.filters = [
-									{
-										"field": "employees",
-										"operator": "contains",
-										"value":  currentUser.first_name
-									},
-									{
-										"field": "employees",
-										"operator": "contains",
-										"value": currentUser.last_name
-									}
-								];	
+				//todo: improve this to make sure u fetch user details ::
+				if (addmin === true) {
+				} else {
+					if (collection === 'payment_ledger') {
+						preferences.filters = [
+							{
+								field: 'employees',
+								operator: 'contains',
+								value: currentUser.first_name
+							},
+							{
+								field: 'employees',
+								operator: 'contains',
+								value: currentUser.last_name
+							}
+						];
 					}
 
-					if(collection === "employees"){
-							preferences.filters = [
-									{
-										"field": "first_name",
-										"operator": "eq",
-										"value":  currentUser.first_name
-									},
-									{
-										"field": "last_name",
-										"operator": "eq",
-										"value": currentUser.last_name
-									}
-								];	
+					if (collection === 'employees') {
+						preferences.filters = [
+							{
+								field: 'first_name',
+								operator: 'eq',
+								value: currentUser.first_name
+							},
+							{
+								field: 'last_name',
+								operator: 'eq',
+								value: currentUser.last_name
+							}
+						];
 					}
-					
 				}
-
 
 				this.preferences = preferences;
 				next();

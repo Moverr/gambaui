@@ -3,7 +3,6 @@
 		<tr :class="{ fixed }">
 			<th v-if="showManualSort" class="manual cell" @click="toggleManualSort">
 				<v-icon name="sort" class="drag-handle" small />
-			 
 			</th>
 			<th v-if="showSelect" class="select cell">
 				<v-checkbox

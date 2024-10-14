@@ -52,25 +52,28 @@
 
 		<div class="inline-form " style="margin-top: 10px; margin-left:30px;">
 			<form action="" method="post">
-				<div class="  drop-down"> 
+				<div class="  drop-down">
 					<p style="margin-left:10px;font-weight:bold;">From : {{ payslipData.from }}</p>
-				 
-					 	<p style="margin-left:10px;font-weight:bold;">To : {{ payslipData.to }}</p>
+
+					<p style="margin-left:10px;font-weight:bold;">To : {{ payslipData.to }}</p>
 				</div>
 			</form>
 		</div>
 		<br />
-		<div  v-if="payslipData !== '' && payslipData !== undefined" class="inline-form " style="margin-top: 10px; margin-left:30px;">
+		<div
+			v-if="payslipData !== '' && payslipData !== undefined"
+			class="inline-form "
+			style="margin-top: 10px; margin-left:30px;"
+		>
 			<form action="" method="post">
 				<div class="  drop-down">
-				 <strong style="font-weight:bold; margin-left:10px;">Branch :</strong> {{payslipData.branch.name}} 
-					  &nbsp; &nbsp; &nbsp;
-			 
-				  <strong style="font-weight:bold;"> Deparment :</strong>   {{payslipData.department.name}}  
-					 
-				</div>
+					<strong style="font-weight:bold; margin-left:10px;">Branch :</strong>
+					{{ payslipData.branch.name }}
+					&nbsp; &nbsp; &nbsp;
 
-			 
+					<strong style="font-weight:bold;">Deparment :</strong>
+					{{ payslipData.department.name }}
+				</div>
 			</form>
 		</div>
 
@@ -136,20 +139,20 @@
 			<table>
 				<tr>
 					<th>Basic</th>
-					<td>{{  payslipData.gross_salary }} {{  payslipData.currency }}</td>
+					<td>{{ payslipData.gross_salary }} {{ payslipData.currency }}</td>
 				</tr>
 				<tr>
 					<th>Additions and Deductions</th>
-					<td>{{  payslipData.earnings_and_deductions }} {{  payslipData.currency }}</td>
+					<td>{{ payslipData.earnings_and_deductions }} {{ payslipData.currency }}</td>
 				</tr>
 				<tr>
 					<th>Net Amount</th>
-					<td>{{  payslipData.net_salary }} {{  payslipData.currency }}</td>
+					<td>{{ payslipData.net_salary }} {{ payslipData.currency }}</td>
 				</tr>
 
 				<tr>
 					<th>Payment Status</th>
-					<td>{{ payslipData.status }}  </td>
+					<td>{{ payslipData.status }}</td>
 				</tr>
 			</table>
 		</div>
@@ -176,55 +179,45 @@ export default {
 		this.getPaySlip(this.primaryKey);
 	},
 
-		props: {
+	props: {
 		primaryKey: {
 			type: null,
 			required: true
 		}
 	},
 
-
 	data() {
 		return {
 			payslipData: '',
-			showalert:false
-		 
+			showalert: false
 		};
 	},
-	 
 
 	methods: {
-	 
 		async getPaySlip(id) {
 			this.showalert = true;
 			this.msgTitle = 'Information';
 			this.msgDetail = 'Fetching Payrolls';
 
-			 
-			const filters = { };
+			const filters = {};
 
-			const bb = await this.$api.getItem('payslip', id,{
+			const bb = await this.$api.getItem('payslip', id, {
 				fields: '*.*,employee.*',
 				filters
 			});
 
 			const payslipData = bb.data;
 
-			console.log("....Data.......");
+			console.log('....Data.......');
 			console.log(payslipData);
 			this.payslipData = payslipData;
-		 
- 
 
 			this.showalert = false;
 		},
- 
- 
+
 		printPage() {
 			window.print();
 		}
-	 
- 
 	}
 };
 </script>
@@ -306,7 +299,6 @@ h1 {
 	word-spacing: 1%;
 }
 
-
 .lightbox {
 	position: fixed;
 	background: #eee;
@@ -344,6 +336,4 @@ h1 {
 		font-size: 12px;
 	}
 }
-
-
 </style>

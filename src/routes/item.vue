@@ -11,7 +11,7 @@
 			:body="$t('server_trouble_copy')"
 		/>
 	</div>
- 
+
 	<div v-else-if="fields === null">
 		<v-header :icon-link="`/${currentProjectKey}/collections`" />
 		<v-loader area="content" />
@@ -527,9 +527,8 @@ export default {
 		fields() {
 			const fields = this.$store.state.collections[this.collection].fields;
 
-			console.log("Fields");
-            console.log(fields);
-			
+			console.log('Fields');
+			console.log(fields);
 
 			return mapValues(fields, field => ({
 				...field,

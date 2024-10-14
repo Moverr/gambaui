@@ -187,7 +187,7 @@ export default {
 	},
 	methods: {
 		search(value) {
-			console.log("Search Method");
+			console.log('Search Method');
 			console.log(value);
 			this.$emit('search', value);
 		},

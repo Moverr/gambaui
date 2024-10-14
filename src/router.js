@@ -20,9 +20,9 @@ import PaySlipItems from './routes/payslipitems.vue';
 import PaySlipItemEdit from './routes/payslipitemedit.vue';
 import TimeTracking from './routes/timeTracking.vue';
 import TimeTrackings from './routes/timeTrackings.vue';
-import Overvew  from './routes/overview.vue';
+import Overvew from './routes/overview.vue';
+import EmployeeItems from './routes/employeeItems.vue';
 
- 
 const Setup2FA = () => import(/* webpackChunkName: "setup-2fa" */ './routes/setup-2fa.vue');
 const ResetPassword = () =>
 	import(/* webpackChunkName: "reset-password" */ './routes/reset-password.vue');
@@ -50,6 +50,8 @@ const ModuleExtension = () =>
 	import(/* webpackChunkName: "module-extension" */ './routes/module-extension.vue');
 
 
+
+//todo: new Addmin
 Vue.use(Router);
 
 const router = new Router({
@@ -123,19 +125,13 @@ const router = new Router({
 			path: '/:project/collections/time_tracking',
 			props: true,
 			component: TimeTrackings
-			 
 		},
 
-		
 		{
 			path: '/:project/collections/time_tracking/create',
 			props: true,
 			component: TimeTracking
-			 
 		},
-
-
-
 
 		{
 			path: '/:project/collections/:collection',
@@ -143,7 +139,6 @@ const router = new Router({
 			component: Items
 		},
 
-		
 		{
 			path: '/:project/collections/:collection/:primaryKey',
 			props: true,
@@ -303,6 +298,17 @@ const router = new Router({
 				publicRoute: true
 			}
 		},
+
+		//todo: display jobs on the public route and people can apply 
+		{
+			path: '/jobs',
+			component: Login,
+			meta: {
+				publicRoute: true
+			}
+		},
+
+
 		{
 			path: '/reset-password',
 			component: ResetPassword,
@@ -380,6 +386,9 @@ router.beforeEach(async (to, from, next) => {
 		path: '/login',
 		query: { redirect: to.fullPath }
 	});
+
+
+	
 });
 
 router.afterEach(to => {

@@ -169,7 +169,6 @@ export default {
 				name: this.$tc('collection', 2),
 				icon: 'folders'
 			});
-			
 
 			if (
 				this.permissions.directus_users.read !== 'none' ||

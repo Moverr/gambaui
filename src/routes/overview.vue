@@ -140,9 +140,7 @@ export default {
 			const lineData = [];
 			const today = new Date();
 			const dayOfWeek = today.getDay(); // Get current day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-			const mondayOffset = (dayOfWeek === 0 ? 6 : dayOfWeek - 1); // Offset to get to Monday
-
-
+			const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Offset to get to Monday
 
 			for (let i = 0; i < 7; i++) {
 				const date = new Date(today);
@@ -166,12 +164,12 @@ export default {
 						const date = entry.date;
 						const entryTime = entry.time;
 
-//todo: to be imple implemented later  .. 
+						//todo: to be imple implemented later  ..
 
 						const dayEntry = lineData.find(item => item.date === date);
-						console.log("Day entry  .......");
-console.log(dayEntry);
-						
+						console.log('Day entry  .......');
+						console.log(dayEntry);
+
 						if (dayEntry) {
 							dayEntry.value = 12;
 						}
@@ -208,11 +206,7 @@ console.log(dayEntry);
 						{ name: 'Sun', count: 0 }
 					];
 
-
- 
-
-					res.data.forEach(entry => { 
-						 
+					res.data.forEach(entry => {
 						const date = new Date(entry.date);
 						const dayOfWeek = date.toLocaleString('en-US', { weekday: 'short' });
 						const day = dayOfWeekCount.find(d => d.name === dayOfWeek);

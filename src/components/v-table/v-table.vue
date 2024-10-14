@@ -1,7 +1,5 @@
 <template>
 	<div class="v-table" :style="styles" :class="{ loading }">
-
-	
 		<table>
 			<table-header
 				:headers.sync="_headers"

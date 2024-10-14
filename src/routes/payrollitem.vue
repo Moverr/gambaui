@@ -135,7 +135,7 @@
 			</form>
 		</div>
 
-		<div  v-if="employees && employees.length > 0" >
+		<div v-if="employees && employees.length > 0">
 			<div class="tabular-data" style="margin-top: 10px; margin-left:50px;">
 				<table border="0">
 					<thead>
@@ -467,12 +467,10 @@ export default {
 							(record.gross_salary === undefined ? 0 : record.gross_salary) +
 							record.ledger[0];
 
-						
-
 						let currency = record.currency;
 
 						let department = record.department.id;
-					 	let branch = this.selectedBranch;
+						let branch = this.selectedBranch;
 
 						let empId = record.id;
 						let status = 'approved';
@@ -491,9 +489,8 @@ export default {
 							status: status
 						};
 
-						const bd = await this.$api.createItem('payslip', body); 
+						const bd = await this.$api.createItem('payslip', body);
 						payslips.push(bd.data);
-						 
 					} catch (error) {
 						console.log(error);
 					} finally {
@@ -501,19 +498,19 @@ export default {
 					}
 				}
 			}
- 
+
 			if (payslips.length > 0) {
 				//todo: add payslips to the addition
 
 				let paylipObject = [];
 
 				for (let i = 0; i < payslips.length; i++) {
-					let payslipId = payslips[i].id; 
+					let payslipId = payslips[i].id;
 					let payslip = { payslip_id: { id: payslipId } };
 					paylipObject.push(payslip);
 				}
 
-				console.log(paylipObject)
+				console.log(paylipObject);
 
 				const requestBody = {
 					branch: this.selectedBranch,
@@ -588,13 +585,13 @@ export default {
 				if (department !== '' && department !== undefined) {
 					filter = {
 						'department.id': { eq: department },
-						'start_date': { lt: this.fromDate },
+						start_date: { lt: this.fromDate },
 						status: { eq: 'active' }
 					};
 				} else {
 					filter = {
 						'department.branch.id': { eq: branch },
-						'start_date': { lt: this.fromDate },
+						start_date: { lt: this.fromDate },
 						status: { eq: 'active' }
 					};
 				}

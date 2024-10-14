@@ -59,7 +59,7 @@
 					<div style=" margin-left: 5px;display:flex">
 						&nbsp;Status
 						<div class="radios">
-							<label >
+							<label>
 								<input
 									type="radio"
 									name="radio"
@@ -69,7 +69,7 @@
 								Draft
 							</label>
 
-							<label  >
+							<label>
 								<input
 									type="radio"
 									name="radio"
