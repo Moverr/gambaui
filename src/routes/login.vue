@@ -263,7 +263,7 @@ export default {
 			await hydrateStore();
 
 			// Default to /collections as homepage
-			let route = `/${this.currentProjectKey}/collections`;
+			let route = `/${this.currentProjectKey}/overview`;
 
 			// If the last visited page is saved in the current user record, use that
 			if (this.$store.state.currentUser.last_page) {

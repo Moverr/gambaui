@@ -1,4 +1,4 @@
-import Vue from '../main';
+import Vue from '../main-old';
 
 export default function formatCollection(collection) {
 	const fallback = Vue.$helpers.formatTitle(collection);

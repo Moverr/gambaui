@@ -1,4 +1,4 @@
-import Vue from '../main';
+import Vue from '../main-old';
 
 export default function formatField(field, collection) {
 	const fallback = Vue.$helpers.formatTitle(field);

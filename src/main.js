@@ -1,100 +1,31 @@
-import Vue from 'vue';
-import lodash from 'lodash';
-import VueDraggable from 'vuedraggable';
-import VTooltip from 'v-tooltip';
-import PortalVue from 'portal-vue';
-import axios from 'axios';
-import meta from 'vue-meta';
-import VueTheMask from 'vue-the-mask';
-import VueCompositionAPI from '@vue/composition-api';
+/*
+ =========================================================
+ * Vue Black Dashboard - v1.1.3
+ =========================================================
 
-import './design/main.scss';
-import './globals';
-import './helpers/handle-focus';
-import './helpers/handle-drag';
+ * Product Page: https://www.creative-tim.com/product/black-dashboard
+ * Copyright 2024 Creative Tim (http://www.creative-tim.com)
 
-import App from './App.vue';
-import router from './router';
-import { i18n, loadLanguageAsync } from './lang';
-import store from './store';
-import api from './api';
-import helpers from './helpers';
-import notify from './notifications';
-import events from './events';
+ =========================================================
 
-import allSettled from 'promise.allsettled';
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-// This is a polyfill for Promise.allSettled. Can be removed in the future when the browser support
-// is there
-allSettled.shim();
+ */
+import Vue from "vue";
+import VueRouter from "vue-router";
+import RouterPrefetch from "vue-router-prefetch";
+import App from "./App";
+// TIP: change to import router from "./router/starterRouter"; to start with a clean layout
+import router from "./router/index";
 
-Vue.config.productionTip = false;
-
-// Make lodash globally available under it's common name `_`
-window._ = lodash;
-
-// Export modules on demand to externl scripts
-// Sample Usage: let _ = $directus.import('lodash');
-window.$directus = window.$directus || {};
-window.$directus.import = module => {
-	const modules = {
-		api: api,
-		axios: axios,
-		lodash: lodash,
-		notify: notify,
-		router: router,
-		store: store
-	};
-	if (!module) return modules;
-	else return modules[module];
-};
-
-Object.defineProperties(Vue.prototype, {
-	$api: { value: api },
-	$notify: { value: notify },
-	$axios: { value: axios }
-});
-
-Vue.directive('focus', {
-	inserted(el, binding) {
-		if (binding.value === undefined || Boolean(binding.value) !== false) {
-			el.focus();
-		}
-	}
-});
-
-Vue.use(VueCompositionAPI);
-Vue.use(events);
-Vue.use(VTooltip, {
-	defaultDelay: {
-		show: 500
-	},
-	defaultOffset: 2,
-	defaultBoundariesElement: 'window',
-	autoHide: false
-});
-Vue.use(PortalVue);
-Vue.use(VueTheMask);
-Vue.use(meta);
-Vue.component('draggable', VueDraggable);
-
-/* eslint-disable no-new */
-const app = new Vue({
-	render: h => h(App),
-	router,
-	i18n,
-	store,
-	api,
-	helpers
-}).$mount('#app');
-
-store.watch(
-	state => state.currentUser.locale,
-	locale => loadLanguageAsync(locale)
-);
-store.watch(
-	state => state.currentProjectKey,
-	key => (api.config.project = key)
-);
-
-export default app;
+import BlackDashboard from "./plugins/blackDashboard";
+import i18n from "./i18n";
+import "./registerServiceWorker";
+Vue.use(BlackDashboard);
+Vue.use(VueRouter);
+Vue.use(RouterPrefetch);
+new Vue({
+  router,
+  i18n,
+  render: (h) => h(App),
+}).$mount("#app");
