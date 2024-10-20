@@ -1,5 +1,8 @@
 <template>
 	<div class="public">
+		
+
+	
 		<div class="container" :class="{ wide }">
 			<a href="https://directus.io" target="_blank" class="logo">
 				<img
@@ -7,14 +10,17 @@
 					alt="Directus Logo"
 					src="../assets/logo-dark.svg"
 				/>
+
+				 HR APP
 			</a>
 			<div class="content">
-				<h1 class="title type-heading-large">{{ heading }}</h1>
+				<h1 class="title type-heading-large">{{ heading }} test </h1>
 				<slot />
 			</div>
 			<div class="public-view-notice"><slot name="notice" /></div>
 		</div>
 		<div class="art" :style="artStyles">
+			ddese
 			<img
 				v-if="project_foreground.asset_url"
 				class="logo"
