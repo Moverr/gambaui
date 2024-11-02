@@ -9,13 +9,7 @@
 				<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="../pages/dashboard.html">
 				 Curly HR
 				</a>
-				<button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-				  <span class="navbar-toggler-icon mt-2">
-					<span class="navbar-toggler-bar bar1"></span>
-					<span class="navbar-toggler-bar bar2"></span>
-					<span class="navbar-toggler-bar bar3"></span>
-				  </span>
-				</button>
+				 
 				<div class="collapse navbar-collapse" id="navigation">
 				  <ul class="navbar-nav mx-auto ms-xl-auto me-xl-7">
 					<li class="nav-item">
@@ -83,10 +77,11 @@
 					<v-spinner v-if="firstName === null" />
 					<p v-else v-html="$t('continue_as', { name: firstName + ' ' + lastName })" />
 					<div class="buttons">
-						<button type="button" class="secondary" @click="logout">
+						<button type="button"  class="btn bg-gradient-info w-100 mt-4 mb-0" 
+						  @click="logout">
 							{{ $t('sign_out') }}
 						</button>
-						<button type="submit">{{ $t('continue') }}</button>
+						<button   class="btn bg-gradient-info w-100 mt-4 mb-0"type="submit">{{ $t('continue') }}</button>
 					</div>
 				</div>
 				<template v-else>
@@ -97,6 +92,7 @@
 						:placeholder="$t('email')"
 						required
 						autocomplete="username"
+						class="form-control"
 					/>
 					<input
 						ref="password"
@@ -105,9 +101,11 @@
 						:placeholder="$t('password')"
 						autocomplete="current-password"
 						required
+						class="form-control"
+						
 					/>
 					<div class="buttons">
-						<button type="submit">{{ $t('sign_in') }}</button>
+						<button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0" >{{ $t('sign_in') }}</button>
 						<router-link class="secondary" to="/reset-password">
 							{{ $t('forgot_password') }}
 						</router-link>
@@ -393,7 +391,7 @@ form {
 button:not(.secondary) {
 	position: relative;
 	background-color: var(--button-primary-background-color);
-	border: 2px solid var(--button-primary-background-color);
+
 	border-radius: var(--border-radius);
 	color: var(--button-primary-text-color);
 	height: 60px;
@@ -466,8 +464,8 @@ input {
 
 	&:-webkit-autofill {
 		color: var(--input-text-color) !important;
-		-webkit-text-fill-color: var(--input-text-color);
-		-webkit-box-shadow: 0 0 0px 1000px var(--white) inset;
+		//-webkit-text-fill-color: var(--input-text-color);
+		//-webkit-box-shadow: 0 0 0px 1000px var(--white) inset;
 	}
 
 	&:hover:not([disabled]) {
@@ -488,8 +486,8 @@ input {
 
 		&:-webkit-autofill {
 			color: var(--input-text-color) !important;
-			-webkit-text-fill-color: var(--input-text-color);
-			-webkit-box-shadow: 0 0 0px 1000px var(--white) inset;
+			//-webkit-text-fill-color: var(--input-text-color);
+			//-webkit-box-shadow: 0 0 0px 1000px var(--white) inset;
 		}
 	}
 }

@@ -4,34 +4,26 @@
 
 	
 		<div class="container" :class="{ wide }">
-			<a href="https://directus.io" target="_blank" class="logo">
+			<a href="#" target="_blank" class="logo">
 				<img
 					v-tooltip.right="{ classes: ['inverted'], content: version }"
-					alt="Directus Logo"
-					src="../assets/logo-dark.svg"
+					alt="Curly HR"
+					src="../assets/logod1.svg" style="height: 40px;"
 				/>
-
-				 HR APP
+ 
 			</a>
 			<div class="content">
-				<h1 class="title type-heading-large">{{ heading }} test </h1>
+				<h1 class="title type-heading-large">{{ heading }}  </h1>
 				<slot />
 			</div>
 			<div class="public-view-notice"><slot name="notice" /></div>
 		</div>
-		<div class="art" :style="artStyles">
-			ddese
-			<img
-				v-if="project_foreground.asset_url"
-				class="logo"
-				:src="project_foreground.asset_url"
-				:alt="project_name"
-			/>
-			<div
-				v-if="project_public_note"
-				class="public-note selectable"
-				v-html="project_public_note"
-			/>
+		<div class="art" :style="artStyles" style="background-image:url('../assets/img/curved-images/curved6.jpg')" >
+			  
+			 
+			<img src="../assets/img/hr-logo-liner.png"  width="60%"/>
+			 
+			 
 		</div>
 	</div>
 </template>
@@ -40,6 +32,8 @@
 import { version } from '../../package.json';
 import { mapGetters } from 'vuex';
 import marked from 'marked';
+
+import bg from '../assets/img/curved-images/curved6.jpg';
 
 const defaults = {
 	project_color: 'project-background-color',
@@ -107,7 +101,7 @@ export default {
 
 .container {
 	background-color: var(--page-background-color);
-	box-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.25);
+	 
 	max-width: 500px;
 	width: 100%;
 	height: 100%;

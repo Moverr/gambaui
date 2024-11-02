@@ -6,6 +6,7 @@
 				<aside class="modal">
 					<h2 v-if="title" class="type-title">{{ title }}</h2>
 					<p>{{ message }}</p>
+					MOVERS
 					<slot />
 				</aside>
 			</div>
@@ -75,7 +76,8 @@ aside {
 	margin: 0 auto;
 	width: 90%;
 	max-width: 560px;
-	background-color: var(--modal-background-color);
+	background-color: #fff;
+	//var(--modal-background-color);
 	border-radius: var(--border-radius);
 	transition: inherit;
 	pointer-events: painted;

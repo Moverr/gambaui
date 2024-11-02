@@ -2,21 +2,25 @@
 	<div class="nav-sidebar">
 		<v-blocker v-show="active" class="blocker" :z-index="2" @click="disableNav" />
 		<transition name="nav">
-			<aside :class="{ active }">
-				<button class="a11y-close" @click="disableNav">Close nav</button>
+			<aside class="{ active } sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y">
+ 
+				<!-- <button   @click="disableNav" style="background:red;">Close nav</button> -->
 
-				<module-bar />
 
-				<section class="main-bar">
-					<!-- <project-switcher /> -->
+				 
 
+				<!-- <module-bar /> -->
+<CustomNavBar />
+				<!-- <section class="main-bar">
+				<project-switcher />
+ 
 					<nav-menu
 						v-if="customCollections === null"
 						class="menu-section"
 						:links="defaultCollections"
 					/>
 
-					<template v-else>
+					<template >
 						<nav-menu
 							v-for="(group, index) in customCollections"
 							:key="index"
@@ -31,7 +35,7 @@
 						class="menu-section"
 						:bookmarks="bookmarks"
 					/>
-				</section>
+				</section> -->
 			</aside>
 		</transition>
 	</div>
@@ -44,6 +48,7 @@ import VBlocker from '../../blocker.vue';
 import { TOGGLE_NAV } from '@/store/mutation-types';
 import { mapState } from 'vuex';
 import ModuleBar from './module-bar';
+import CustomNavBar from './custom-navbar.vue'
 import { some } from 'lodash';
 
 export default {
@@ -53,7 +58,8 @@ export default {
 		NavMenu,
 		NavBookmarks,
 		VBlocker,
-		ModuleBar
+		ModuleBar,
+		CustomNavBar
 	},
 	computed: {
 		...mapState(['currentProjectKey', 'currentUser']),

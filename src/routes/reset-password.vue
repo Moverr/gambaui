@@ -1,11 +1,51 @@
 <template>
+	<div>
+		<div class="container position-sticky z-index-sticky top-0">
+			<div class="row">
+			  <div class="col-12">
+				<!-- Navbar -->
+				<nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+				  <div class="container-fluid pe-0">
+					<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="../pages/dashboard.html">
+					 Curly HR
+					</a>
+					 
+					<div class="collapse navbar-collapse" id="navigation">
+					  <ul class="navbar-nav mx-auto ms-xl-auto me-xl-7">
+						<li class="nav-item">
+						  <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="../pages/dashboard.html">
+							<i class="fa fa-chart-pie opacity-6 text-dark me-1"></i>
+							About us
+						  </a>
+						</li>
+						<li class="nav-item">
+						  <a class="nav-link me-2" href="../pages/profile.html">
+							<i class="fa fa-user opacity-6 text-dark me-1"></i>
+							Jobs
+						  </a>
+						</li>
+						
+					  </ul>
+					  <li class="nav-item d-flex align-items-center">
+						<a class="btn btn-round btn-sm mb-0 btn-outline-primary me-2" target="_blank" href="#">Contact Us</a>
+					  </li>
+					  
+					</div>
+				  </div>
+				</nav>
+				<!-- End Navbar -->
+			  </div>
+			</div>
+		  </div>
+	
+	
 	<PublicView :heading="$t('reset_password')">
 		<form v-if="resetMode === false && requestSent === false" @submit.prevent="onRequest">
 			<project-chooser />
 
 			<input v-model="email" v-focus type="email" :placeholder="$t('email')" required />
 			<div class="buttons">
-				<button type="submit">{{ $t('reset') }}</button>
+				<button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0" >{{ $t('reset') }}</button>
 				<router-link to="/login" class="secondary">{{ $t('sign_in') }}</router-link>
 			</div>
 		</form>
@@ -39,6 +79,7 @@
 			{{ notice.text }}
 		</public-notice>
 	</PublicView>
+</div>
 </template>
 
 <script>
