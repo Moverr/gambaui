@@ -2,7 +2,7 @@
 	<div class="nav-sidebar">
 		<v-blocker v-show="active" class="blocker" :z-index="2" @click="disableNav" />
 		<transition name="nav">
-			<aside class="{ active } sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 ps ps--active-y">
+			<aside class="{ active }">
  
 				<!-- <button   @click="disableNav" style="background:red;">Close nav</button> -->
 

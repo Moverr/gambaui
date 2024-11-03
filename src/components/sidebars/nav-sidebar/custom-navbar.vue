@@ -2,67 +2,104 @@
 .navbar-nav {}
 
 .navbar-nav .nav-item {
-  font-size: 20px;
+  font-size: 12px;
   background: #fff;
   margin-bottom: 15px;
   margin-top: 15px;
   padding: 10px;
+  width: 200px !important;
+  text-align: left;
+  padding-left: 20px;
+}
+
+.navbar-nav .nav-item .a {
+  text-align: left;
+  color: #fff;
+}
+
+.navbar-nav .nav-item div {
+  text-align: left;
+  padding-top: 8px;
+  text-transform: capitalize !important;
+}
+
+.navbar-nav .nav-item i {
+  color: aliceblue;
+  background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%);
+  float: left;
 }
 </style>
 
 <template>
-  <div class="collapse navbar-collapse w-auto ps ps--active-y">
-
-    <div style="height:100px; width:100px;  display:block;">
-      &nbsp;
-    </div>
+  <div>
 
 
 
-    <ul class="navbar-nav">
-      <li class="nav-item"> <router-link :to="`/${this.currentProjectKey}/overview`">
-
-          <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-
-          Dashboard
-        </router-link></li>
-
-      <li class="nav-item">
-        <router-link :to="`/${this.currentProjectKey}/collections/branches`">
-          <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-
-          Branches</router-link>
-      </li>
-
-      
-      <li class="nav-item">
-
-
-        <router-link :to="`/${this.currentProjectKey}/collections/employees`">
-
-          <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-
-          Employees</router-link>
-      </li>
-
-
-      
-      <li class="nav-item">
-
-
-        <router-link :to="`/${this.currentProjectKey}/collections/departments`">
-
-          <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
-
-          Departments</router-link>
-      </li>
+    <section class="main-bar">
 
 
 
 
+      <ul class="navbar-nav">
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/overview`">
+
+            <i class="fa fa-bars text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Dashboard</div>
+          </router-link>
+        </li>
 
 
-    </ul>
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/branches`">
+
+            <i class=" fa fa-institution  text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Branches</div>
+          </router-link>
+        </li>
+
+
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/departments`">
+
+            <i class="fa fa-institution  s text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Departments</div>
+          </router-link>
+        </li>
+
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/employees`">
+
+            <i class="fa fa-address-card text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Employees</div>
+          </router-link>
+        </li>
+
+
+
+
+
+
+      </ul>
+    </section>
   </div>
 </template>
 
