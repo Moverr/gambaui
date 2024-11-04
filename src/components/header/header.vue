@@ -1,5 +1,8 @@
 <template>
-	<header class="v-header" :class="{ scrolled }">
+	 
+
+	<!-- end  -->
+	<header class="v-header "  :class="{ scrolled }">
 		<button :disabled="navActive" class="nav-toggle" @click="activateNav">
 			<v-icon name="menu" />
 		</button>
@@ -11,11 +14,7 @@
 			:background-color="settings ? 'warning-light' : 'button-tertiary-background-color'"
 		/>
 		<div class="title" :class="{ 'has-breadcrumb': navBreadcrumb }">
-			<ol v-if="navBreadcrumb" class="breadcrumb">
-				<li v-for="{ name, path } in navBreadcrumb" :key="path" class="breadcrumb-item">
-					<router-link :to="path">{{ name }}</router-link>
-				</li>
-			</ol>
+			 
 
 			<div class="flex">
 				<h1 class="type-title">{{ title || currentPage.name }}</h1>
@@ -25,6 +24,7 @@
 		<slot />
 		<slot name="buttons" />
 	</header>
+ 
 </template>
 
 <script>

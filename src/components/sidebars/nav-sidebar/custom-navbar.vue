@@ -31,9 +31,16 @@
 </style>
 
 <template>
-  <div>
+  <div style="background-color: white;">
 
 
+    <h1 style="
+    font-size: 22px;
+    padding: 20px;
+    text-shadow: 2px 2px 4px rgba(240, 248, 255, 0.8);
+    transform: rotate(-3deg);
+    color: #333; letter-spacing:2px;
+    "> CURLY <br/> HR SYSTEM </h1>
 
     <section class="main-bar">
 

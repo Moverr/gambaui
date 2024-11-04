@@ -2,7 +2,7 @@
 	<div
 		ref="container"
 		:style="{ minWidth: totalWidth + 'px' }"
-		class="v-table"
+		class=" card mb-4"
 		:class="{ loading }"
 		@scroll="onScroll"
 	>

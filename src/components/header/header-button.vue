@@ -4,7 +4,7 @@
 			delay: { show: 750, hide: 100 },
 			content: label
 		}"
-		class="v-header-button"
+		class="v-header-button "
 	>
 		<v-contextual-menu
 			v-if="Object.keys(options).length > 0"
