@@ -1,48 +1,124 @@
 <template>
 	<div class="dashboard">
-		<v-header
-			:breadcrumb="breadcrumb"
-			:info-toggle="!newItem && !batch && !activityDetail"
-			:icon-link="iconLink"
-			:icon="singleItem ? collectionInfo.icon || 'box' : 'arrow_back'"
-			item-detail
-			:settings="collection === 'directus_webhooks'"
-		>
-			<template slot="title">
-				<span
-					v-tooltip="statusName"
-					class="status-indicator"
-					:style="{ backgroundColor: `var(--${statusColor})` }"
-				/>
-			</template>
-		</v-header>
+	 
+		 
 
-		<br />
-		<br />
-		<br />
-
-		<div class="overview">
+		<div class="overview container-fluid py-4 ">
 			<h1>{{ message }}</h1>
 
-			<div class="number-card">
-				<div class="title-card">Branches</div>
-				<div class="amount-card">{{ branches_count }}</div>
-			</div>
 
-			<div class="number-card">
-				<div class="title-card">Departments</div>
-				<div class="amount-card">{{ departments_count }}</div>
-			</div>
+			<div class="  col-xl-3 col-sm-6 mb-xl-0 mb-4" style="float: left; width:210px;">
+				<div class="card">
+				  <div class="card-body p-3">
+					<div class="row">
+					  <div class="col-8">
+						<div class="numbers">
+						  <p class="text-sm mb-0 text-capitalize font-weight-bold">Branches</p>
+						  <h5 class="font-weight-bolder mb-0">
+							{{ branches_count }}
+							<span class="text-success text-sm font-weight-bolder"> - </span>
+						  </h5>
+						</div>
+					  </div>
+					  <div class="col-4 text-end">
+						<div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+						  <i class="fa fa-institution text-lg opacity-10" aria-hidden="true"></i>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
 
-			<div class="number-card">
-				<div class="title-card">Employees</div>
-				<div class="amount-card">{{ total_head_count }}</div>
-			</div>
 
-			<div class="number-card">
-				<div class="title-card">Left</div>
-				<div class="amount-card">{{ total_left_count }}</div>
-			</div>
+
+			  
+			<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4" style="float: left;margin-left:10px; width:210px;">
+				<div class="card">
+				  <div class="card-body p-3">
+					<div class="row">
+					  <div class="col-8">
+						<div class="numbers">
+						  <p class="text-sm mb-0 text-capitalize font-weight-bold">Departments</p>
+						  <h5 class="font-weight-bolder mb-0">
+							{{ departments_count }}
+							<span class="text-success text-sm font-weight-bolder"> - </span>
+						  </h5>
+						</div>
+					  </div>
+					  <div class="col-4 text-end">
+						<div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+						  <i class="fa fa-building text-lg opacity-10" aria-hidden="true"></i>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+
+
+
+			  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4" style="float: left;margin-left:5px; width:210px;">
+				<div class="card">
+				  <div class="card-body p-3">
+					<div class="row">
+					  <div class="col-8">
+						<div class="numbers">
+						  <p class="text-sm mb-0 text-capitalize font-weight-bold"> Employees</p>
+						  <h5 class="font-weight-bolder mb-0">
+							{{ total_head_count }}
+							<span class="text-success text-sm font-weight-bolder">
+
+								{{ (total_head_count / (total_head_count + total_left_count)) * 100 }}%
+							</span>
+						  </h5>
+						</div>
+					  </div>
+					  <div class="col-4 text-end">
+						<div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+						  <i class="fa fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+
+
+
+			  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4" style="float: left;margin-left:5px; width:210px;">
+				<div class="card">
+				  <div class="card-body p-3">
+					<div class="row">
+					  <div class="col-8">
+						<div class="numbers">
+						  <p class="text-sm mb-0 text-capitalize font-weight-bold">Left </p>
+						  <h5 class="font-weight-bolder mb-0">
+							{{ total_left_count }}
+							<span class="text-success text-sm font-weight-bolder">
+								{{ (total_left_count / (total_head_count + total_left_count)) * 100 }}%
+							</span>
+						  </h5>
+						</div>
+					  </div>
+					  <div class="col-4 text-end">
+						<div class="icon icon-shape bg-gradient-primary shadow text-center border-radius-md">
+						  <i class="fa fa-user  text-lg opacity-10" aria-hidden="true"></i>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+			  </div>
+
+
+
+<div style="clear: both;"></div>
+
+		 
+
+		  
+ 
 		</div>
 
 		<div class="overview">
@@ -512,5 +588,8 @@ console.log(dayEntry);
 	text-transform: uppercase;
 	letter-spacing: 0.1em;
 	color: green;
+}
+.item-card{
+	float: left;
 }
 </style>
