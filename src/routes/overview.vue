@@ -592,4 +592,8 @@ console.log(dayEntry);
 .item-card{
 	float: left;
 }
+.card :hover{
+	background-color: white !important;
+	cursor: pointer;
+}
 </style>
