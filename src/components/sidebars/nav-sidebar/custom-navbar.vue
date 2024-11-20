@@ -35,19 +35,26 @@
 
 
     <h1 style="
-    font-size: 22px;
-    padding: 20px;
+    font-size: 12px;
+    padding-left: 20px;
     text-shadow: 2px 2px 4px rgba(240, 248, 255, 0.8);
     transform: rotate(-3deg);
     color: #333; letter-spacing:2px;
     "> CURLY <br/> HR SYSTEM </h1>
 
-    <section class="main-bar">
+    <section class="main-bar"
+    
+    style="    padding-right: 10px; margin-bottom: 40px;
+    overflow-y: scroll;
+    background: #fff;"
+
+    
+    >
 
 
 
 
-      <ul class="navbar-nav">
+      <ul class="navbar-nav" style="margin-bottom: 30px;">
         <li class="nav-item btn bg-gradient-primary mt-3 w-100">
 
           <router-link :to="`/${this.currentProjectKey}/overview`">
@@ -97,6 +104,46 @@
               aria-hidden="true"></i>
 
             <div>Employees</div>
+          </router-link>
+        </li>
+
+
+
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/leave_requests`">
+
+            <i class="fa fa-umbrella text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Leave Requests</div>
+          </router-link>
+        </li>
+
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/leave_types`">
+
+            <i class="fa fa-umbrella-beach text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Leave Types</div>
+          </router-link>
+        </li>
+
+
+        <li class="nav-item btn bg-gradient-primary mt-3 w-100">
+
+          <router-link :to="`/${this.currentProjectKey}/collections/payrolls`">
+
+            <i class="fa fa-money-bill text-lg opacity-10 icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center"
+              aria-hidden="true"></i>
+
+            <div>Pay-roll</div>
           </router-link>
         </li>
 

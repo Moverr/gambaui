@@ -137,7 +137,7 @@
 
 		<div  v-if="employees && employees.length > 0" >
 			<div class="tabular-data" style="margin-top: 10px; margin-left:50px;">
-				<table border="0">
+				<table border="0" class="table"
 					<thead>
 						<tr>
 							<th>
